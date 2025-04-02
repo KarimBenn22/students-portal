@@ -1,34 +1,74 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+
+type SignInFormValues = {
+  username: string;
+  password: string;
+};
+
+const defaultValues: SignInFormValues = {
+  username: "",
+  password: "",
+};
 
 function SignInForm() {
+  const form = useForm<SignInFormValues>({
+    defaultValues,
+  });
+
+  const onSubmit = (data: SignInFormValues) => {
+    
+  };
+
   return (
-    <form>
-      <div className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="username">Username</Label>
-          <Input
-            id="username"
-            name="username"
-            placeholder="Enter your username"
-            required
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" className="w-full">
           Sign In
         </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 }
+
+export { SignInForm };

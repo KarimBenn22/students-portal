@@ -1,6 +1,5 @@
-"use client"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,10 +7,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { SignInForm } from "@/components/auth/signin/signin-form";
 
 export default function SignInPage() {
   return (
@@ -44,7 +43,7 @@ export default function SignInPage() {
       </div>
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <Card>
+          <Card className="shadow-none border-0">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl text-center">Sign in</CardTitle>
               <CardDescription className="text-center">
@@ -52,7 +51,7 @@ export default function SignInPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              
+              <SignInForm></SignInForm>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <div className="text-sm text-center text-muted-foreground">
@@ -69,5 +68,5 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
