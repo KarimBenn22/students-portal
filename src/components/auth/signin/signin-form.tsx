@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
-import { tryCatch, handleFormError } from "@/lib/utils";
+import { tryCatch, handleValidationError, isApiError } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type SignInFormValues = {
@@ -43,8 +43,29 @@ function SignInForm() {
       return;
     }
 
-    const hasError = handleFormError(data, form.setError, setApiError, router);
-    if (hasError) return;
+    if (!data.success) {
+      // Handle validation errors
+      const hasValidationError = handleValidationError(data, form.setError);
+      if (hasValidationError) return;
+
+      // Handle API errors specific to signin
+      if (isApiError(data.error)) {
+        switch (data.error.code) {
+          case "already_authenticated":
+            router.push("/");
+            return;
+          case "invalid_credentials":
+            setApiError("Invalid username or password");
+            return;
+          default:
+            toast.error("An unexpected error occurred");
+            return;
+        }
+      }
+
+      toast.error("An unexpected error occurred");
+      return;
+    }
 
     toast.success("Signed in successfully!");
     router.push("/dashboard");

@@ -71,35 +71,30 @@ type ValidationIssue = {
   message: string;
 };
 
-type ErrorResponse = {
+type ValidationErrorResponse = {
   success: false;
-  error:
-    | {
-        success: false;
-        error: ValidationError;
-      }
-    | {
-        code: "password_weak" | "username_taken" | "already_authenticated";
-        message: string;
-      };
+  error: {
+    success: false;
+    error: {
+      issues: ValidationIssue[];
+      name: string;
+    };
+  };
 };
 
-export function handleFormError<T extends Record<string, any>>(
+export function handleValidationError<T extends Record<string, any>>(
   data: any,
-  setError: UseFormSetError<T>,
-  setApiError: (error: string) => void,
-  router: any
-) {
+  setError: UseFormSetError<T>
+): boolean {
   if (!data.success) {
-    const errorResponse = data as ErrorResponse;
+    const errorResponse = data as ValidationErrorResponse;
 
     // Handle validation errors
     if (
       "error" in errorResponse.error &&
       "issues" in errorResponse.error.error
     ) {
-      for (const issue of errorResponse.error.error
-        .issues as ValidationIssue[]) {
+      for (const issue of errorResponse.error.error.issues) {
         const field = issue.path[0] as Path<T>;
         setError(field, {
           type: issue.code,
@@ -108,23 +103,6 @@ export function handleFormError<T extends Record<string, any>>(
       }
       return true;
     }
-
-    // Handle API errors
-    if ("code" in errorResponse.error) {
-      switch (errorResponse.error.code) {
-        case "already_authenticated":
-          router.push("/");
-          return true;
-        case "password_weak":
-        case "username_taken":
-          setApiError(errorResponse.error.message);
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    return false;
   }
 
   return false;

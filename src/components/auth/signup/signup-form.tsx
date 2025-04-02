@@ -23,7 +23,7 @@ import { paths } from "@/api/schema";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
-import { tryCatch, handleFormError } from "@/lib/utils";
+import { tryCatch, handleValidationError, isApiError } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type SignUpFormValues =
@@ -53,8 +53,30 @@ function SignUpForm() {
       return;
     }
 
-    const hasError = handleFormError(data, form.setError, setApiError, router);
-    if (hasError) return;
+    if (!data.success) {
+      // Handle validation errors
+      const hasValidationError = handleValidationError(data, form.setError);
+      if (hasValidationError) return;
+
+      // Handle API errors specific to signup
+      if (isApiError(data.error)) {
+        switch (data.error.code) {
+          case "already_authenticated":
+            router.push("/");
+            return;
+          case "password_weak":
+          case "username_taken":
+            setApiError(data.error.message);
+            return;
+          default:
+            toast.error("An unexpected error occurred");
+            return;
+        }
+      }
+
+      toast.error("An unexpected error occurred");
+      return;
+    }
 
     toast.success("Account created successfully!");
     router.push("/dashboard");
