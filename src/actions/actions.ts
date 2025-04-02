@@ -41,8 +41,8 @@ async function signUp(payload: SignUpPayload) {
   const headersStore = await headers();
   const cookiesStore = await cookies();
 
-  const api = apiClient();
-  const { data, error } = await api.POST("/auth/signin", {
+  const api = apiClient();  
+  const { data, error } = await api.POST("/auth/signup", {
     body: payload,
     headers: {
       Cookies: headersStore.get("Cookies"),
@@ -88,4 +88,5 @@ async function signOut() {
   });
   return { success: true, error: undefined };
 }
-export { signIn };
+
+export { signIn, signUp, signOut };

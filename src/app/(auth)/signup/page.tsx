@@ -7,31 +7,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SignInForm } from "@/components/auth/signin/signin-form";
+import { SignUpForm } from "@/components/auth/signup/signup-form";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <Card className="shadow-none border-0">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+        <CardTitle className="text-2xl text-center">Create an account</CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access your account
+          Enter your details to create your account
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SignInForm />
+        <SignUpForm />
       </CardContent>
       <CardFooter className="flex flex-col space-y-4">
         <div className="text-sm text-center text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <Link
-            href="/signup"
+            href="/signin"
             className="text-primary underline-offset-4 hover:underline"
           >
-            Sign up
+            Sign in
           </Link>
         </div>
       </CardFooter>
     </Card>
   );
-}
+} 

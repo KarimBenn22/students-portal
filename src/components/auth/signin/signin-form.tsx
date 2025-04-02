@@ -10,8 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useState } from "react";
+import { tryCatch, handleFormError } from "@/lib/utils";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type SignInFormValues = {
   username: string;
@@ -24,18 +28,36 @@ const defaultValues: SignInFormValues = {
 };
 
 function SignInForm() {
+  const router = useRouter();
+  const [apiError, setApiError] = useState<string>("");
   const form = useForm<SignInFormValues>({
     defaultValues,
   });
 
   const onSubmit = async (payload: SignInFormValues) => {
-    const data = await signIn(payload);
-    console.log(data);
+    setApiError("");
+    const { data, error } = await tryCatch(signIn(payload));
+
+    if (error) {
+      toast.error("An unexpected error occurred");
+      return;
+    }
+
+    const hasError = handleFormError(data, form.setError, setApiError, router);
+    if (hasError) return;
+
+    toast.success("Signed in successfully!");
+    router.push("/dashboard");
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {apiError && (
+          <Alert variant="destructive">
+            <AlertDescription>{apiError}</AlertDescription>
+          </Alert>
+        )}
         <FormField
           control={form.control}
           name="username"
