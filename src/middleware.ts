@@ -4,7 +4,8 @@ import { getCurrentSession } from "@/actions/actions";
 function createRouteMatcher(paths: string[]) {
     return (request: NextRequest): boolean => {
         for (const path of paths) {
-            const regex = new RegExp(`^${path}$`);
+            const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`^${escapedPath}$`);
             if (regex.test(request.nextUrl.pathname)) {
                 return true;
             }
@@ -19,7 +20,6 @@ const isStudentRoute = createRouteMatcher([]);
 
 export default async function middleware(request: NextRequest) {
     const session = await getCurrentSession();
-    console.log(session);
 
     // Handle authenticated users
     if (session) {

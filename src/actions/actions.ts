@@ -92,7 +92,6 @@ async function signOut() {
 
 const me = async () => {
   const headersStore = await headers();
-  console.log("headers", headersStore.get("cookie"));
   const api = apiClient();
   return await api.GET("/auth/me", {
     headers: {
@@ -110,7 +109,6 @@ const getCurrentSession = async () => {
     }
 
     const { data, error } = await me()
-    console.log(data, error);
     if (error) {
       return null;
     }
