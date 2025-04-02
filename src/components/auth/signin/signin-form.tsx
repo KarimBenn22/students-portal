@@ -44,11 +44,9 @@ function SignInForm() {
     }
 
     if (!data.success) {
-      // Handle validation errors
       const hasValidationError = handleValidationError(data, form.setError);
       if (hasValidationError) return;
 
-      // Handle API errors specific to signin
       if (isApiError(data.error)) {
         switch (data.error.code) {
           case "already_authenticated":
