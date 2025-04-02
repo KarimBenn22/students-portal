@@ -1,6 +1,7 @@
 "use server";
 import { apiClient } from "@/api/api-client";
 import { paths } from "@/api/schema";
+import { cache } from "react";
 import { headers, cookies } from "next/headers";
 
 // Sign in
@@ -15,7 +16,7 @@ async function signIn(payload: SignInPayload) {
   const { data, error } = await api.POST("/auth/signin", {
     body: payload,
     headers: {
-      Cookies: headersStore.get("Cookies"),
+      cookie: headersStore.get("cookie"),
     },
   });
 
@@ -41,11 +42,11 @@ async function signUp(payload: SignUpPayload) {
   const headersStore = await headers();
   const cookiesStore = await cookies();
 
-  const api = apiClient();  
+  const api = apiClient();
   const { data, error } = await api.POST("/auth/signup", {
     body: payload,
     headers: {
-      Cookies: headersStore.get("Cookies"),
+      cookie: headersStore.get("cookie"),
     },
   });
 
@@ -71,7 +72,7 @@ async function signOut() {
   const api = apiClient();
   const { error } = await api.GET("/auth/signout", {
     headers: {
-      Cookies: headersStore.get("Cookies"),
+      cookie: headersStore.get("cookie"),
     },
   });
 
@@ -89,4 +90,37 @@ async function signOut() {
   return { success: true, error: undefined };
 }
 
-export { signIn, signUp, signOut };
+const me = async () => {
+  const headersStore = await headers();
+  console.log("headers", headersStore.get("cookie"));
+  const api = apiClient();
+  return await api.GET("/auth/me", {
+    headers: {
+      cookie: headersStore.get("cookie"),
+    }
+  })
+};
+
+const getCurrentSession = async () => {
+  return await cache(async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sessionToken")?.value ?? null;
+    if (token === null) {
+      return null;
+    }
+
+    const { data, error } = await me()
+    console.log(data, error);
+    if (error) {
+      return null;
+    }
+
+    if (data.token !== token) {
+      return null;
+    }
+
+    return data;
+  })();
+}
+
+export { signIn, signUp, signOut, me, getCurrentSession };
