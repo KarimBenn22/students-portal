@@ -1,4 +1,5 @@
 "use client";
+import { signIn } from "@/actions/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
 import { useForm } from "react-hook-form";
 
 type SignInFormValues = {
@@ -26,8 +28,9 @@ function SignInForm() {
     defaultValues,
   });
 
-  const onSubmit = (data: SignInFormValues) => {
-    
+  const onSubmit = async (payload: SignInFormValues) => {
+    const data = await signIn(payload);
+    console.log(data);
   };
 
   return (
@@ -40,7 +43,7 @@ function SignInForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your username" {...field} />
+                <Input placeholder="Enter your username" {...field} required />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -57,6 +60,7 @@ function SignInForm() {
                   type="password"
                   placeholder="Enter your password"
                   {...field}
+                  required
                 />
               </FormControl>
               <FormMessage />
