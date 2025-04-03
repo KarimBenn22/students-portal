@@ -1,9 +1,7 @@
-import Link from "next/link";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -21,17 +19,6 @@ export default function SignInPage() {
       <CardContent>
         <SignInForm />
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4">
-        <div className="text-sm text-center text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-primary underline-offset-4 hover:underline"
-          >
-            Sign up
-          </Link>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
