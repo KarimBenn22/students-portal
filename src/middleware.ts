@@ -30,7 +30,7 @@ export default async function middleware(request: NextRequest) {
   if (teacherSession) {
     // Redirect authenticated teachers from guest routes
     if (isGuestRoute(request)) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/teacher", request.url));
     }
   } else {
     if (isTeacherRoute(request)) {

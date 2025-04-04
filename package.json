@@ -12,7 +12,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "auth:teacher:gen": "bun x @better-auth/cli generate --config src/api/auth/teacher.auth.ts"
+    "auth:teacher:generate": "bun x @better-auth/cli generate --config src/api/auth/teacher.auth.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",

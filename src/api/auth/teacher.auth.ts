@@ -1,5 +1,4 @@
-import { betterAuth, type BetterAuthPlugin } from "better-auth";
-import { APIError } from "better-auth/api";
+import { betterAuth, } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { openAPI } from "better-auth/plugins";
 import { prisma } from "../db";
@@ -23,23 +22,5 @@ export const auth = betterAuth({
       return `teacher_${nanoid()}`;
     },
   },
-  plugins: [disableSignUp(), openAPI()],
+  plugins: [openAPI()],
 });
-
-function disableSignUp() {
-  return {
-    id: "disable-sign-up-plugin",
-    hooks: {
-      before: [
-        {
-          matcher: (c) => c.path.startsWith("/sign-up"),
-          handler: async () => {
-            throw new APIError("UNAUTHORIZED", {
-              message: "Sign up is disabled",
-            });
-          },
-        },
-      ],
-    },
-  } satisfies BetterAuthPlugin;
-}
