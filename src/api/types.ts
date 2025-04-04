@@ -10,4 +10,11 @@ export interface BaseApiBindings extends Env {
   };
 }
 
-export interface TeacherApiBindings extends BaseApiBindings {}
+export interface TeacherApiBindings extends BaseApiBindings {
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    };
+  };
+}
