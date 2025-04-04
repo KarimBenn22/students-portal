@@ -1,13 +1,12 @@
 import { createAuthClient } from "better-auth/react";
 
-export const teacherAuthClient = createAuthClient({
-  basePath: "/api/teacher/auth",
+export const authClient = createAuthClient({
   baseURL: process.env.VERCEL_URL || "http://localhost:3000",
 });
 
-type TeacherErrorTypes = Partial<
+type ErrorTypes = Partial<
   Record<
-    keyof typeof teacherAuthClient.$ERROR_CODES,
+    keyof typeof authClient.$ERROR_CODES,
     {
       en: string;
       ar: string;
@@ -15,7 +14,7 @@ type TeacherErrorTypes = Partial<
   >
 >;
 
-const teacherErrorCodes = {
+const ErrorCodes = {
   USER_NOT_FOUND: {
     en: "User not found",
     ar: "المستخدم غير موجود",
@@ -108,11 +107,11 @@ const teacherErrorCodes = {
     en: "Account not found",
     ar: "الحساب غير موجود",
   },
-} satisfies TeacherErrorTypes;
+} satisfies ErrorTypes;
 
-export const getTeacherAuthErrorMessage = (code: string, lang: "en" | "ar") => {
-  if (code in teacherErrorCodes) {
-    return teacherErrorCodes[code as keyof typeof teacherErrorCodes][lang];
+export const getAuthErrorMessage = (code: string, lang: "en" | "ar") => {
+  if (code in ErrorCodes) {
+    return ErrorCodes[code as keyof typeof ErrorCodes][lang];
   }
   return "";
 };

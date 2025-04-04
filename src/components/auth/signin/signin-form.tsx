@@ -1,8 +1,5 @@
 "use client";
-import {
-  getTeacherAuthErrorMessage,
-  teacherAuthClient,
-} from "@/client/teacher-auth.client";
+import { getAuthErrorMessage, authClient } from "@/client/auth.client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -34,9 +31,9 @@ function SignInForm() {
   });
 
   async function onSubmit(values: SignInFormValues) {
-    const { data, error } = await teacherAuthClient.signIn.email(values);
+    const { data, error } = await authClient.signIn.email(values);
     if (error) {
-      toast.error(getTeacherAuthErrorMessage(error.code!, "en"));
+      toast.error(getAuthErrorMessage(error.code!, "en"));
       return;
     }
 

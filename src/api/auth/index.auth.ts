@@ -1,12 +1,11 @@
-import { betterAuth, } from "better-auth";
+import { betterAuth } from "better-auth";
+import { z } from "zod";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { openAPI } from "better-auth/plugins";
 import { prisma } from "../db";
-import { nanoid } from "nanoid";
 
 export const auth = betterAuth({
   appName: "Finals Portal",
-  basePath: "/api/teacher/auth",
   baseURL: process.env.VERCEL_URL || "http://localhost:3000",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -15,11 +14,15 @@ export const auth = betterAuth({
     enabled: true,
   },
   user: {
-    modelName: "teacher",
-  },
-  advanced: {
-    generateId: () => {
-      return `teacher_${nanoid()}`;
+    additionalFields: {
+      role: {
+        type: "string",
+        fieldName: "role",
+        defaultValue: "student",
+        validator: {
+          input: z.enum(["student", "teacher"]),
+        },
+      },
     },
   },
   plugins: [openAPI()],
