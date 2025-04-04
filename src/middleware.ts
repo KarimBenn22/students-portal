@@ -19,7 +19,7 @@ const isTeacherRoute = createRouteMatcher([]);
 const isStudentRoute = createRouteMatcher([]);
 
 export default async function middleware(request: NextRequest) {
-    const session = await getCurrentSession();
+    /*const session = await getCurrentSession();
 
     // Handle authenticated users
     if (session) {
@@ -47,7 +47,7 @@ export default async function middleware(request: NextRequest) {
         if (isTeacherRoute(request) || isStudentRoute(request)) {
             return NextResponse.redirect(new URL("/signin", request.url));
         }
-    }
+    }*/
 
     return NextResponse.next();
 }

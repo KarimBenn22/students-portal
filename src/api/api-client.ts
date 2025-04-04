@@ -9,7 +9,7 @@ export const apiClient = () => {
 
 	_client = createClient<paths>({
 		baseUrl: "https://finals-portal-hono.vercel.app/",
-		//credentials: "include"
+		credentials: "include"
 	});
 
 	return _client;
