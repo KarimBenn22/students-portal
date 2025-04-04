@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AddProjectForm } from "../forms/add-project-form";
 import { useState } from "react";
 
 export function AddProjectModal() {
@@ -27,10 +26,6 @@ export function AddProjectModal() {
             Create a new project for students to work on.
           </DialogDescription>
         </DialogHeader>
-        <AddProjectForm
-          onSuccess={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-        />
       </DialogContent>
     </Dialog>
   );
