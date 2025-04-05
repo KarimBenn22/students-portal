@@ -7,10 +7,10 @@ export default function TeacherProjectsPage() {
       <PageWrapper.Header
         title="Projects"
         description="Manage your available projects"
-      ></PageWrapper.Header>
-      <PageWrapper.Content>
+      >
         <AddProjectModal></AddProjectModal>
-      </PageWrapper.Content>
+      </PageWrapper.Header>
+      <PageWrapper.Content></PageWrapper.Content>
     </PageWrapper>
   );
 }
