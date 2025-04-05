@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Specialty } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import { honoClient } from "@/client/hono.client";
 
 function AddProjectForm() {
   const form = useForm<z.infer<typeof projectInsertSchema>>({
@@ -32,9 +33,11 @@ function AddProjectForm() {
     },
   });
   const specialties = Object.values(Specialty);
-  const onSubmit = (payload: z.infer<typeof projectInsertSchema>) => {
+  // form submission
+  const onSubmit = async (payload: z.infer<typeof projectInsertSchema>) => {
     console.log(payload);
-    console.log(Object.values(specialties));
+    const response = honoClient.api.teachers.projects.$post({ json: payload });
+    console.log((await response).json());
   };
   return (
     <Form {...form}>
@@ -46,7 +49,7 @@ function AddProjectForm() {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter project title"></Input>
+                <Input placeholder="Enter project title" {...field}></Input>
               </FormControl>
               <FormMessage></FormMessage>
             </FormItem>

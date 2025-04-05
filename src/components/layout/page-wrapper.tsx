@@ -25,7 +25,7 @@ PageWrapper.Header = function ({
 
 PageWrapper.Content = function ({ children, ...props }: React.ComponentProps<"div">) {
 	return (
-		<div data-page-wrapper="content" className="flex" {...props}>
+		<div data-page-wrapper="content" className="flex w-full" {...props}>
 			{children}
 		</div>
 	);

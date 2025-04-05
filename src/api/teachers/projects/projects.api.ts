@@ -8,7 +8,6 @@ import {
 
 export default factories.teacher
   .createApp()
-  .get("/", (c) => c.text("Teacher Projects APIs"))
   .get("/", async (c) => {
     const { id } = c.var.session.user;
     const projects = await prisma.project.findMany({
