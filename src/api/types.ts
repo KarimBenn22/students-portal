@@ -1,5 +1,6 @@
 import { Session, User } from "better-auth";
-import { Env } from "hono/types";
+import { Hono } from "hono";
+import { Env, Schema } from "hono/types";
 
 export interface BaseApiBindings extends Env {
   Variables: {
@@ -18,3 +19,9 @@ export interface TeacherApiBindings extends BaseApiBindings {
     };
   };
 }
+
+export type BaseRoute<
+  T extends BaseApiBindings,
+  U extends Schema,
+  E extends string
+> = (api: Hono<T, U, E>) => Hono<T, U, E>;

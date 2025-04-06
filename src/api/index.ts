@@ -1,7 +1,7 @@
 import { auth } from "./auth/index.auth";
 import factories from "./factories";
 import authMiddleware from "./middleware/auth.middleware";
-import teachersApi from "./teachers/teachers.api";
+import teachersApi from "./routes/teachers/index.teachers";
 
 export const api = factories.base
   .createApp()
