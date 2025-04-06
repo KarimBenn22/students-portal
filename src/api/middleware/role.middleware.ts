@@ -1,6 +1,6 @@
 import factories from "../factories";
 
-export default function teacherMiddleware() {
+export default function roleMiddleware(role: "student" | "teacher") {
   return factories.base.createMiddleware(async (c, next) => {
     const { session } = c.var;
 
@@ -8,17 +8,17 @@ export default function teacherMiddleware() {
       return c.json(
         {
           error: "Unauthorized",
-          message: "No session found",
+          message: "Not authenticated",
         },
         401
       );
     }
 
-    if ((session.user as unknown as { role: string }).role !== "teacher") {
+    if ((session.user as unknown as { role: string }).role !== role) {
       return c.json(
         {
           error: "Unauthorized",
-          message: "User is not a teacher",
+          message: `User is not a ${role}`,
         },
         401
       );
