@@ -1,5 +1,5 @@
 "use client";
-import { signIn } from "@/actions/actions";
+import { getAuthErrorMessage, authClient } from "@/client/auth.client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,81 +10,53 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useState } from "react";
-import { tryCatch, handleValidationError, isApiError } from "@/lib/utils";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type SignInFormValues = {
-  username: string;
+  email: string;
   password: string;
 };
 
 const defaultValues: SignInFormValues = {
-  username: "",
+  email: "",
   password: "",
 };
 
 function SignInForm() {
   const router = useRouter();
-  const [apiError, setApiError] = useState<string>("");
   const form = useForm<SignInFormValues>({
     defaultValues,
   });
 
-  const onSubmit = async (payload: SignInFormValues) => {
-    setApiError("");
-    const { data, error } = await tryCatch(signIn(payload));
-
+  async function onSubmit(values: SignInFormValues) {
+    const { data, error } = await authClient.signIn.email(values);
     if (error) {
-      toast.error("An unexpected error occurred");
+      toast.error(getAuthErrorMessage(error.code!, "en"));
       return;
     }
 
-    if (!data.success) {
-      const hasValidationError = handleValidationError(data, form.setError);
-      if (hasValidationError) return;
+    console.log(data);
 
-      if (isApiError(data.error)) {
-        switch (data.error.code) {
-          case "already_authenticated":
-            router.push("/");
-            return;
-          case "invalid_credentials":
-            setApiError("Invalid username or password");
-            return;
-          default:
-            toast.error("An unexpected error occurred");
-            return;
-        }
-      }
-
-      toast.error("An unexpected error occurred");
-      return;
-    }
-
-    toast.success("Signed in successfully!");
-    router.push("/dashboard");
-  };
+    router.push("/");
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {apiError && (
-          <Alert variant="destructive">
-            <AlertDescription>{apiError}</AlertDescription>
-          </Alert>
-        )}
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your username" {...field} required />
+                <Input
+                  placeholder="example@univ-msila.dz"
+                  {...field}
+                  required
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,7 +71,7 @@ function SignInForm() {
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="●●●●●●●●"
                   {...field}
                   required
                 />

@@ -6,12 +6,18 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "prepare": "bun db:generate",
+    "typecheck": "tsc --noEmit",
     "lint": "next lint",
-    "generate-schema": "bunx openapi-typescript https://finals-portal-hono.vercel.app/doc -o ./src/api/schema.ts",
-    "test:ts": "tsc --noEmit"
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "auth:generate": "bun x @better-auth/cli generate --config src/api/auth/index.auth.ts"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
     "@hookform/resolvers": "^5.0.1",
+    "@prisma/client": "^6.5.0",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -38,11 +44,13 @@
     "@radix-ui/react-toggle": "^1.1.2",
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
+    "better-auth": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.5.2",
+    "hono": "^4.7.5",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
@@ -68,7 +76,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
-    "openapi-typescript": "^7.6.1",
+    "prisma": "^6.5.0",
     "tailwindcss": "^4",
     "typescript": "^5.8.2"
   }

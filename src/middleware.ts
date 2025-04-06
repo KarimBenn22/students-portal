@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentSession } from "@/actions/actions";
+import { authClient } from "./client/auth.client";
 
 function createRouteMatcher(paths: string[]) {
     return (request: NextRequest): boolean => {
@@ -14,21 +14,27 @@ function createRouteMatcher(paths: string[]) {
     };
 }
 
-const isGuestRoute = createRouteMatcher(["/signin", "/signup", "/"]);
-const isTeacherRoute = createRouteMatcher([]);
+const isGuestRoute = createRouteMatcher(["/signin", "/signup"]);
+const isTeacherRoute = createRouteMatcher(["/teacher"]);
 const isStudentRoute = createRouteMatcher([]);
 
 export default async function middleware(request: NextRequest) {
-    const session = await getCurrentSession();
+    const {data: session} = await authClient.getSession({
+        fetchOptions: {
+            headers: {
+                'cookie': request.headers.get('cookie') ?? ""
+            }
+        }
+    })
 
     // Handle authenticated users
     if (session) {
-        const { role } = session.user;
+        const { role } = session.user as unknown as { role: string };
 
         // Redirect authenticated users from guest routes
         if (isGuestRoute(request)) {
             if (role === "teacher") {
-                return NextResponse.json({ error: "not implemented" }, { status: 500 });
+                return NextResponse.redirect(new URL("/teacher", request.url));
             } else if (role === "student") {
                 return NextResponse.json({ error: "not implemented" }, { status: 500 });
             }
@@ -41,7 +47,7 @@ export default async function middleware(request: NextRequest) {
 
         // Protect student routes
         if (isStudentRoute(request) && role !== "student") {
-            return NextResponse.json({ error: "not implemented" }, { status: 500 });
+            return NextResponse.redirect(new URL("/teacher", request.url));
         }
     } else {
         if (isTeacherRoute(request) || isStudentRoute(request)) {
