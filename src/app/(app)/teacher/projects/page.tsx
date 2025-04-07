@@ -6,11 +6,7 @@ import { headers } from "next/headers";
 
 export default async function TeacherProjectsPage() {
   const incomingHeaders = await headers();
-
-  // Create a complete headers object
   const headerObject: Record<string, string> = {};
-
-  // Add all headers
   incomingHeaders.forEach((value, key) => {
     headerObject[key] = value;
   });
@@ -24,7 +20,7 @@ export default async function TeacherProjectsPage() {
 
   const apiProjects = await response.json();
   
-  // Map the API response to match the expected ProjectCardProps interface
+  // TODO: Clean up this section
   const projects = apiProjects.map((project: any) => ({
     ...project,
     speciality: project.specialty.replace("_"," "),
