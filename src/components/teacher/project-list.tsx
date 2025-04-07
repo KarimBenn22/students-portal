@@ -11,6 +11,7 @@ import {
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { ProjectCard, type ProjectCardProps as Project } from "./project-card";
+import { AddEditProjectModal } from "./modals/add-project.modal";
 
 // Generate random pastel colors for categories
 const categoryColors: Record<string, string> = {
@@ -41,7 +42,6 @@ function ProjectsList({ initialProjects }: { initialProjects: Project[] }) {
 
     return matchesSearch && matchesLevel && matchesCategory;
   });
-
   return (
     <div className="space-y-6 w-full">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
@@ -96,7 +96,7 @@ function ProjectsList({ initialProjects }: { initialProjects: Project[] }) {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} {...project} />
+            <ProjectCard key={project.id} {...project}/>
           ))}
         </div>
       )}
