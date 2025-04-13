@@ -2,7 +2,7 @@ import { honoClient } from "@/client/hono.client";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 import { AddEditProjectModal } from "@/components/teacher/modals/add-project.modal";
 import { ProjectsList } from "@/components/teacher/project-list";
-import { withHeaders } from "@/lib/utils";
+import { withHeaders } from "@/lib/server-utils";
 import { headers } from "next/headers";
 
 export default async function TeacherProjectsPage() {
@@ -15,13 +15,21 @@ export default async function TeacherProjectsPage() {
 
   const apiProjects = await response.json();
   
-  // TODO: Clean up this section
-  const projects = apiProjects.map((project: any) => ({
-    ...project,
-    speciality: project.specialty.replace("_"," "),
-    createdAt: new Date(project.createdAt)
-  }));
-  console.log(projects);
+  // Initialize projects variable
+  let projects = null;
+
+  if(Array.isArray(apiProjects)){
+    projects = apiProjects.map((project: any) => ({
+      ...project,
+      speciality: project.specialty.replace("_"," "),
+      createdAt: new Date(project.createdAt)
+    }));
+    console.log(projects);
+  }
+  else {
+    const projects = null;
+  }
+  
 
   return (
     <PageWrapper>
@@ -32,7 +40,7 @@ export default async function TeacherProjectsPage() {
         <AddEditProjectModal mode="add"></AddEditProjectModal>
       </PageWrapper.Header>
       <PageWrapper.Content>
-        <ProjectsList initialProjects={projects}></ProjectsList>
+        <ProjectsList initialProjects={projects || []}></ProjectsList>
       </PageWrapper.Content>
     </PageWrapper>
   );
