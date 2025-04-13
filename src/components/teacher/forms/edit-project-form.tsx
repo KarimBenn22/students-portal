@@ -23,7 +23,6 @@ import { Specialty } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { honoClient } from "@/client/hono.client";
 import { ProjectCardProps } from "../project-card";
-import { json } from "stream/consumers";
 
 function EditProjectForm(data: ProjectCardProps) {
   console.log("category: ", data.speciality);

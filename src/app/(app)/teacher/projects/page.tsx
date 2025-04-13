@@ -2,6 +2,7 @@ import { honoClient } from "@/client/hono.client";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 import { AddEditProjectModal } from "@/components/teacher/modals/add-project.modal";
 import { ProjectsList } from "@/components/teacher/project-list";
+import { withHeaders } from "@/lib/utils";
 import { headers } from "next/headers";
 
 export default async function TeacherProjectsPage() {
@@ -14,7 +15,7 @@ export default async function TeacherProjectsPage() {
   const response = await honoClient.api.teachers.projects.$get(
     {},
     {
-      headers: headerObject,
+      headers: await withHeaders(),
     }
   );
 
