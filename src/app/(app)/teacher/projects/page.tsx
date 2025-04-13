@@ -6,12 +6,6 @@ import { withHeaders } from "@/lib/utils";
 import { headers } from "next/headers";
 
 export default async function TeacherProjectsPage() {
-  const incomingHeaders = await headers();
-  const headerObject: Record<string, string> = {};
-  incomingHeaders.forEach((value, key) => {
-    headerObject[key] = value;
-  });
-
   const response = await honoClient.api.teachers.projects.$get(
     {},
     {
