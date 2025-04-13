@@ -4,8 +4,8 @@ import { authClient } from "./client/auth.client";
 function createRouteMatcher(paths: string[]) {
     return (request: NextRequest): boolean => {
         for (const path of paths) {
-            const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`^${escapedPath}$`);
+            const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace('\\*', '.*');
+            const regex = new RegExp(`^${escapedPath}`);
             if (regex.test(request.nextUrl.pathname)) {
                 return true;
             }
@@ -15,9 +15,9 @@ function createRouteMatcher(paths: string[]) {
 }
 
 const isGuestRoute = createRouteMatcher(["/signin", "/signup"]);
-const isTeacherRoute = createRouteMatcher(["/teacher"]);
-const isStudentRoute = createRouteMatcher([]);
+const isTeacherRoute = createRouteMatcher(["/teacher","/teacher/*"]);
 
+const isStudentRoute = createRouteMatcher([]);
 export default async function middleware(request: NextRequest) {
     const {data: session} = await authClient.getSession({
         fetchOptions: {
