@@ -18,3 +18,12 @@ export interface TeacherApiBindings extends BaseApiBindings {
     };
   };
 }
+
+export interface StudentApiBindings extends BaseApiBindings {
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    };
+  };
+}

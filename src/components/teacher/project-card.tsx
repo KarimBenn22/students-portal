@@ -8,15 +8,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
+import { useState } from "react";
+import { AddEditProjectModal } from "./modals/add-project.modal";
 
 export type ProjectCardProps = {
   id: string;
   title: string;
   description: string;
   speciality: string;
-  category: string[];
+  category: string;
   createdAt: Date;
 };
+
 function ProjectCard({
   id,
   title,
@@ -25,14 +28,29 @@ function ProjectCard({
   category,
   createdAt,
 }: ProjectCardProps) {
-  console.log(id);
+  const data: ProjectCardProps = {
+    id,
+    title,
+    description,
+    speciality,
+    category,
+    createdAt,
+  };
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <div className="overflow-hidden rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-gray-300 space-y-2">
+      <AddEditProjectModal
+        mode="edit"
+        data={data}
+        isOpen={open}
+        setIsOpen={(value: boolean) => setOpen(value)}
+      />
       <div className="flex items-center justify-between">
         <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-600">
           {speciality}
         </span>
-        <ProjectMenu projectId={id}></ProjectMenu>
+        <ProjectMenu projectId={id} openModal={() => setOpen(true)} />
       </div>
 
       <div>
@@ -62,7 +80,13 @@ const removeProject = async (projectId: string) => {
   return response;
 };
 
-function ProjectMenu({ projectId }: { projectId: string }) {
+function ProjectMenu({
+  projectId,
+  openModal,
+}: {
+  projectId: string;
+  openModal: () => void;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -71,7 +95,7 @@ function ProjectMenu({ projectId }: { projectId: string }) {
       <DropdownMenuContent>
         <DropdownMenuLabel>Project Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={openModal}>Edit</DropdownMenuItem>
         <DropdownMenuItem onClick={async () => await removeProject(projectId)}>
           Remove
         </DropdownMenuItem>

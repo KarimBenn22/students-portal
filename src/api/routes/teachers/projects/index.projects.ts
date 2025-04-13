@@ -10,6 +10,7 @@ export default factories.teacher
   .createApp()
   .get("/", async (c) => {
     const { id } = c.var.session.user;
+
     const projects = await prisma.project.findMany({
       where: {
         authorId: id,
@@ -21,6 +22,7 @@ export default factories.teacher
   .post("/", zValidator("json", projectInsertSchema), async (c) => {
     const { id } = c.var.session.user;
     const data = c.req.valid("json");
+
     const project = await prisma.project.create({
       data: {
         ...data,
@@ -31,12 +33,17 @@ export default factories.teacher
         },
       },
     });
-    return c.json(project);
+
+    return c.json({
+      project,
+      message: "Project created successfully",
+    });
   })
   .patch("/:id", zValidator("json", projectUpdateSchema), async (c) => {
     const { id } = c.var.session.user;
     const { id: projectId } = c.req.param();
     const data = c.req.valid("json");
+
     const project = await prisma.project.update({
       where: {
         id: projectId,
@@ -44,16 +51,25 @@ export default factories.teacher
       },
       data,
     });
-    return c.json(project);
+
+    return c.json({
+      project,
+      message: "Project updated successfully",
+    });
   })
   .delete("/:id", async (c) => {
     const { id } = c.var.session.user;
     const { id: projectId } = c.req.param();
+
     const project = await prisma.project.delete({
       where: {
         id: projectId,
         authorId: id,
       },
     });
-    return c.json(project);
+
+    return c.json({
+      project,
+      message: "Project deleted successfully",
+    });
   });

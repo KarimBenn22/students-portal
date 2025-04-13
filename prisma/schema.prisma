@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String     @id
   name          String
   email         String
   emailVerified Boolean
@@ -19,6 +19,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   projects      Project[]
+  proposals     Proposal[]
 
   @@unique([email])
   @@map("user")
@@ -70,15 +71,18 @@ model Verification {
 }
 
 model Project {
-  id          String    @id @default(nanoid())
+  id          String     @id @default(nanoid())
   authorId    String
-  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   title       String
   description String?
   specialty   Specialty
   category    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  proposals   Proposal[]
+
+  @@map("project")
 }
 
 enum Specialty {
@@ -88,4 +92,16 @@ enum Specialty {
   M2_IDO
   M2_RTIC
   M2_IA
+}
+
+model Proposal {
+  id         String   @id @default(nanoid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposerId String
+  proposer   User     @relation(fields: [proposerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("proposal")
 }
