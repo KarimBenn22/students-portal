@@ -15,8 +15,8 @@ PageWrapper.Header = function ({
 	return (
 		<div data-page-wrapper="header" className="flex w-full justify-between" {...props}>
 			<div className="flex flex-col gap-1" data-page-wrapper="header-title-description">
-				<h3 className="text-2xl font-extrabold tracking-wide">{title}</h3>
-				<p className="text-muted-foreground text-lg">{description}</p>
+				<h3 className="text-3xl font-bold tracking-tight">{title}</h3>
+				<p className="text-muted-foreground">{description}</p>
 			</div>
 			{children}
 		</div>
