@@ -7,5 +7,4 @@ export default function authMiddleware() {
     c.set("session", session);
     return next();
   });
-}
-;
+};
