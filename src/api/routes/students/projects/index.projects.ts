@@ -60,6 +60,11 @@ export default factories.student
       },
     });
   })
+  .get("/count", async (c) => {
+    const count = await prisma.project.count();
+
+    return c.json({ count });
+  })
   .get("/:id", async (c) => {
     const { id } = c.req.param();
 
