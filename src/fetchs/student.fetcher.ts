@@ -1,5 +1,6 @@
 import { honoClient } from "@/client/hono.client";
-import { InferRequestType } from "hono";
+import { InferRequest } from "better-auth";
+import { InferRequestType, InferResponseType } from "hono";
 
 // Projects routes
 const studentProjectsRoute = honoClient.api.students.projects;
@@ -12,11 +13,14 @@ const studentProjectProposalRoute =
   honoClient.api.students.proposals[":projectId"];
 
 // Projects APIs
-export async function getStudentProjects(
-  input: InferRequestType<typeof studentProjectsRoute>,
-  headers?: Record<string, string>
-) {
-  const res = await studentProjectsRoute.$get(input, { headers });
+export type Projects = InferResponseType<typeof studentProjectRoute.$get, 200>;
+export async function getStudentProjects(headers?: Record<any, any>) {
+  const res = await studentProjectsRoute.$get(
+    { query: {} },
+    {
+      headers: headers,
+    }
+  );
   const data = await res.json();
 
   if (!res.ok) {
@@ -56,10 +60,19 @@ export async function getStudentProposals(
 }
 
 export async function createStudentProposal(
-  input: InferRequestType<typeof studentProjectProposalRoute>,
+  projectId: InferRequestType<
+    typeof studentProjectProposalRoute.$post
+  >["param"]["projectId"],
   headers?: Record<string, string>
 ) {
-  const res = await studentProjectProposalRoute.$post(input, { headers });
+  const res = await studentProjectProposalRoute.$post(
+    {
+      param: {
+        projectId,
+      },
+    },
+    { headers }
+  );
   const data = await res.json();
 
   if (!res.ok) {
