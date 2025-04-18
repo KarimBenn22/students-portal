@@ -49,7 +49,9 @@ export async function getStudentProposals(
   input: Record<string, never> = {},
   headers?: Record<string, string>
 ) {
-  const res = await studentProposalsRoute.$get(input, { headers });
+  const res = await studentProposalsRoute.$get(input, {
+    headers: headers,
+  });
   const data = await res.json();
 
   if (!res.ok) {
