@@ -107,6 +107,7 @@ model Proposal {
   proposerId String
   proposer   User           @relation(fields: [proposerId], references: [id], onDelete: Cascade)
   status     ProposalStatus @default(PENDING)
+  lockedIn   Boolean        @default(false)
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
 

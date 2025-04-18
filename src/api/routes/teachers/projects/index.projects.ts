@@ -72,4 +72,32 @@ export default factories.teacher
       project,
       message: "Project deleted successfully",
     });
+  })
+  .get("count", async (c) => {
+    const { id } = c.var.session.user;
+
+    const projectsCount = await prisma.project.count({
+      where: {
+        authorId: id,
+      },
+    });
+
+    return c.json({ projectsCount });
+  })
+  .get("/popular", async (c) => {
+    const { session } = c.var;
+
+    const projects = await prisma.project.findMany({
+      where: {
+        authorId: session.user.id,
+      },
+      orderBy: {
+        proposals: {
+          _count: "desc",
+        },
+      },
+      take: 4,
+    });
+
+    return c.json(projects);
   });
