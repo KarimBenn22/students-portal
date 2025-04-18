@@ -10,22 +10,15 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { ProjectCard, type ProjectCardProps as Project } from "./project-card";
-import { AddEditProjectModal } from "./modals/add-project.modal";
+import { ProjectCard } from "./project-card";
+import { TeacherProject } from "@/fetchs/teacher.fetcher";
 
-// Generate random pastel colors for categories
-const categoryColors: Record<string, string> = {
-  web: "bg-blue-100 text-blue-800",
-  mobile: "bg-green-100 text-green-800",
-  desktop: "bg-purple-100 text-purple-800",
-  ai: "bg-red-100 text-red-800",
-  iot: "bg-amber-100 text-amber-800",
-  vr: "bg-indigo-100 text-indigo-800",
-  "3d": "bg-pink-100 text-pink-800",
-};
-
-function ProjectsList({ initialProjects }: { initialProjects: Project[] }) {
-  const [projects] = useState<Project[]>(initialProjects);
+function ProjectsList({
+  initialProjects,
+}: {
+  initialProjects: TeacherProject[];
+}) {
+  const [projects] = useState(initialProjects);
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -33,10 +26,10 @@ function ProjectsList({ initialProjects }: { initialProjects: Project[] }) {
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
       project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase());
+      project.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesLevel =
-      levelFilter === "all" || project.speciality === levelFilter;
+      levelFilter === "all" || project.specialty === levelFilter;
     const matchesCategory =
       categoryFilter === "all" || project.category.includes(categoryFilter);
 
@@ -96,7 +89,7 @@ function ProjectsList({ initialProjects }: { initialProjects: Project[] }) {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} {...project}/>
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       )}

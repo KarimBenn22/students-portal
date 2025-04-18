@@ -1,11 +1,15 @@
 import { honoClient } from "@/client/hono.client";
-import { InferRequestType } from "hono";
+import { InferRequestType, InferResponseType } from "hono";
 
 const teacherProjectsRoute = honoClient.api.teachers.projects;
 const teacherProjectRoute = honoClient.api.teachers.projects[":id"];
 
+export type TeacherProject = InferResponseType<
+  typeof teacherProjectsRoute.$get,
+  200
+>[number];
 export async function getTeacherProjects(
-  input: Record<string, never> = {},
+  input: InferRequestType<typeof teacherProjectsRoute.$get>,
   headers?: Record<string, string>
 ) {
   const res = await teacherProjectsRoute.$get(input, { headers });
@@ -19,7 +23,7 @@ export async function getTeacherProjects(
 }
 
 export async function createTeacherProject(
-  input: InferRequestType<typeof teacherProjectsRoute>,
+  input: InferRequestType<typeof teacherProjectsRoute.$post>,
   headers?: Record<string, string>
 ) {
   const res = await teacherProjectsRoute.$post(input, { headers });
@@ -33,7 +37,7 @@ export async function createTeacherProject(
 }
 
 export async function updateTeacherProject(
-  input: InferRequestType<typeof teacherProjectRoute>,
+  input: InferRequestType<typeof teacherProjectRoute.$patch>,
   headers?: Record<string, string>
 ) {
   const res = await teacherProjectRoute.$patch(input, { headers });
@@ -47,7 +51,7 @@ export async function updateTeacherProject(
 }
 
 export async function deleteTeacherProject(
-  input: InferRequestType<typeof teacherProjectRoute>,
+  input: InferRequestType<typeof teacherProjectRoute.$delete>,
   headers?: Record<string, string>
 ) {
   const res = await teacherProjectRoute.$delete(input, { headers });
