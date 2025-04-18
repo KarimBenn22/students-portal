@@ -47,18 +47,8 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
       project.title.toLowerCase().includes(searchQuery.toLocaleLowerCase())
   );
 
-  const handleApply = (project: StudentProject) => {
+  const handleApply = async (project: StudentProject) => {
     setSelectedProject(project);
-    setIsDialogOpen(true);
-  };
-
-  const handleSubmitApplication = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const proposal = formData.get("proposal") as string;
-
     if (!selectedProject) return;
     const { data, error } = await tryCatch(
       createStudentProposal({
@@ -114,33 +104,6 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
               </p>
             </div>
           )}
-
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent className="sm:max-w-[600px]">
-              <DialogHeader>
-                <DialogTitle>Apply to Project</DialogTitle>
-                <DialogDescription>{selectedProject?.title}</DialogDescription>
-              </DialogHeader>
-
-              <form onSubmit={handleSubmitApplication}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="proposal">Your Proposal</Label>
-                    <Textarea
-                      id="proposal"
-                      name="proposal"
-                      rows={4}
-                      placeholder="Describe your ideas for this project and why you're interested..."
-                      required
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Submit Application</Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
         </div>
       </PageWrapper.Content>
     </PageWrapper>

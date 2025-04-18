@@ -6,8 +6,6 @@ export default async function ApplicationsPage() {
   const applications = await getStudentProposals({}, await withHeaders());
   console.log(applications);
   return (
-    <div>
-      <p>{JSON.stringify(applications)}</p>
-    </div>
+    <ApplicationsClient initialApplications={applications}></ApplicationsClient>
   );
 }

@@ -2,55 +2,33 @@
 
 import { useState } from "react";
 import { PageWrapper } from "@/components/layout/page-wrapper";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Clock, XCircle } from "lucide-react";
 import { ApplicationCard } from "@/components/student/application-card";
-
-type Application = {
-  id: string;
-  projectId: string;
-  projectTitle: string;
-  teacher: string;
-  proposal: string;
-  teamMembers: Array<{
-    name: string;
-    email: string;
-    regNumber: string;
-  }>;
-  submittedAt: string;
-  status: "pending" | "accepted" | "rejected";
-  feedback: string;
-};
+import { StudentProposal } from "@/fetchs/student.fetcher";
 
 type ApplicationsClientProps = {
-  initialApplications: Application[];
+  initialApplications: StudentProposal;
 };
 
 export function ApplicationsClient({
   initialApplications,
 }: ApplicationsClientProps) {
-  const [selectedApplication, setSelectedApplication] =
-    useState<Application | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<
+    StudentProposal[0] | null
+  >(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const pendingApplications = initialApplications.filter(
-    (app) => app.status === "pending"
+    (app) => app.status === "PENDING"
   );
   const acceptedApplications = initialApplications.filter(
-    (app) => app.status === "accepted"
+    (app) => app.status === "ACCEPTED"
   );
   const rejectedApplications = initialApplications.filter(
-    (app) => app.status === "rejected"
+    (app) => app.status === "REJECTED"
   );
 
-  const handleViewApplication = (application: Application) => {
+  const handleViewApplication = (application: StudentProposal[0]) => {
     setSelectedApplication(application);
     setIsViewDialogOpen(true);
   };
@@ -151,74 +129,6 @@ export function ApplicationsClient({
               )}
             </TabsContent>
           </Tabs>
-
-          {/* View Application Dialog */}
-          <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-            <DialogContent className="sm:max-w-[600px]">
-              <DialogHeader>
-                <DialogTitle>Application Details</DialogTitle>
-                <DialogDescription>
-                  Project: {selectedApplication?.projectTitle}
-                </DialogDescription>
-              </DialogHeader>
-
-              {selectedApplication && (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-medium">Teacher</h3>
-                    <p>{selectedApplication.teacher}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium">Your Proposal</h3>
-                    <p className="text-sm">{selectedApplication.proposal}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium">Team Members</h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {selectedApplication.teamMembers.map((member, index) => (
-                        <li key={index}>
-                          {member.name} ({member.email}) - {member.regNumber}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium">Status</h3>
-                    <div className="flex items-center gap-2">
-                      {selectedApplication.status === "pending" && (
-                        <>
-                          <Clock className="h-4 w-4 text-yellow-500" />
-                          <span>Pending Review</span>
-                        </>
-                      )}
-                      {selectedApplication.status === "accepted" && (
-                        <>
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span>Accepted</span>
-                        </>
-                      )}
-                      {selectedApplication.status === "rejected" && (
-                        <>
-                          <XCircle className="h-4 w-4 text-red-500" />
-                          <span>Rejected</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {selectedApplication.feedback && (
-                    <div>
-                      <h3 className="font-medium">Teacher Feedback</h3>
-                      <p className="text-sm">{selectedApplication.feedback}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
         </div>
       </PageWrapper.Content>
     </PageWrapper>

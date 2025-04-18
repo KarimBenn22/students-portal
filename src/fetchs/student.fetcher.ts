@@ -47,6 +47,10 @@ export async function getStudentProject(
 }
 
 // Proposals APIs
+export type StudentProposal = InferResponseType<
+  typeof studentProposalsRoute.$get,
+  200
+>;
 export async function getStudentProposals(
   input: InferRequestType<typeof studentProposalsRoute.$get>,
   headers?: Record<string, string>

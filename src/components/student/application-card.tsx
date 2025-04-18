@@ -1,50 +1,76 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Clock, Eye, XCircle } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { StudentProposal } from "@/fetchs/student.fetcher";
+import { CheckCircle, Clock, Eye, XCircle } from "lucide-react";
 
 type ApplicationCardProps = {
-  application: {
-    id: string
-    projectId: string
-    projectTitle: string
-    teacher: string
-    proposal: string
-    teamMembers: Array<{
-      name: string
-      email: string
-      regNumber: string
-    }>
-    submittedAt: string
-    status: "pending" | "accepted" | "rejected"
-    feedback: string
-  }
-  onViewDetails: (application: ApplicationCardProps["application"]) => void
-}
+  application: StudentProposal[0];
+  onViewDetails: (application: ApplicationCardProps["application"]) => void;
+};
 
-export function ApplicationCard({ application, onViewDetails }: ApplicationCardProps) {
+export function ApplicationCard({
+  application,
+  onViewDetails,
+}: ApplicationCardProps) {
+  const statusConfig = {
+    PENDING: {
+      color: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+      icon: Clock,
+    },
+    ACCEPTED: {
+      color: "text-green-500 bg-green-500/10 border-green-500/20",
+      icon: CheckCircle,
+    },
+    REJECTED: {
+      color: "text-red-500 bg-red-500/10 border-red-500/20",
+      icon: XCircle,
+    },
+  };
+
+  const StatusIcon = statusConfig[application.status].icon;
+
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <Card className="group transition-all duration-200 hover:shadow-lg hover:border-primary/20">
+      <CardHeader className="space-y-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{application.projectTitle}</CardTitle>
-          {application.status === "pending" && <Clock className="h-5 w-5 text-yellow-500" />}
-          {application.status === "accepted" && <CheckCircle className="h-5 w-5 text-green-500" />}
-          {application.status === "rejected" && <XCircle className="h-5 w-5 text-red-500" />}
+          <CardTitle className="text-lg group-hover:text-primary transition-colors">
+            {application.project.title}
+          </CardTitle>
+          <Badge
+            variant="outline"
+            className={`${statusConfig[application.status].color}`}
+          >
+            <StatusIcon className="mr-1 h-3 w-3" />
+            {application.status.charAt(0) +
+              application.status.slice(1).toLowerCase()}
+          </Badge>
         </div>
-        <CardDescription>Teacher: {application.teacher}</CardDescription>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary" className="bg-muted/50">
+            {application.project.category}
+          </Badge>
+          <span className="text-sm text-muted-foreground">
+            by {application.project.author.name}
+          </span>
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">Team Size: {application.teamMembers.length + 1} members</p>
-          <p className="text-sm text-muted-foreground">Submitted: {application.submittedAt}</p>
-          <div className="flex justify-between pt-2">
-            <Button variant="outline" size="sm" onClick={() => onViewDetails(application)}>
-              <Eye className="mr-2 h-4 w-4" />
-              View Details
-            </Button>
-          </div>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground line-clamp-2">
+          {application.project.description}
+        </p>
+        <div className="flex items-center justify-between pt-2 border-t">
+          <p className="text-sm text-muted-foreground">
+            Submitted: {new Date(application.createdAt).toLocaleDateString()}
+          </p>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

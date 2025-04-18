@@ -1,6 +1,6 @@
 "use client";
 
-import { Projects } from "@/fetchs/student.fetcher";
+import { StudentProject } from "@/fetchs/student.fetcher";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,8 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 interface ProjectCardProps {
-  project: Projects;
-  onApply: (project: Projects) => void;
+  project: StudentProject;
+  onApply: (project: StudentProject) => void;
 }
 
 export function ProjectCard({ project, onApply }: ProjectCardProps) {

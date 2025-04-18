@@ -1,155 +1,232 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { PageWrapper } from "@/components/layout/page-wrapper"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { PageWrapper } from "@/components/layout/page-wrapper";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { authClient, getAuthErrorMessage } from "@/client/auth.client";
+import {
+  displayNameSchema,
+  passwordUpdateSchema,
+} from "@/lib/schemas/profile.schema";
+import type {
+  DisplayNameFormData,
+  PasswordUpdateFormData,
+} from "@/lib/schemas/profile.schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StudentProfile() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isNameLoading, setIsNameLoading] = useState(false);
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
-  // Mock student profile data
-  const [profile, setProfile] = useState({
-    name: "Alex Johnson",
-    email: "alex.j@university.edu",
-    regNumber: "AJ2023",
-    department: "Computer Science",
-    year: "3rd Year",
-    bio: "I'm a computer science student with interests in AI, web development, and blockchain technology.",
-    skills: "JavaScript, React, Python, Machine Learning",
-    interests: "Artificial Intelligence, Web Development, Blockchain",
-  })
+  const displayNameForm = useForm<DisplayNameFormData>({
+    resolver: zodResolver(displayNameSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
 
-  const handleProfileUpdate = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const passwordForm = useForm<PasswordUpdateFormData>({
+    resolver: zodResolver(passwordUpdateSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
 
-    // Simulate API call
-    setTimeout(() => {
-      const formData = new FormData(e.currentTarget)
-
-      const updatedProfile = {
-        ...profile,
-        name: formData.get("name") as string,
-        email: formData.get("email") as string,
-        regNumber: formData.get("regNumber") as string,
-        department: formData.get("department") as string,
-        year: formData.get("year") as string,
-        bio: formData.get("bio") as string,
-        skills: formData.get("skills") as string,
-        interests: formData.get("interests") as string,
+  const onDisplayNameSubmit = async (data: DisplayNameFormData) => {
+    if (isNameLoading) return;
+    try {
+      setIsNameLoading(true);
+      const { data: response, error } = await authClient.updateUser({
+        name: data.name,
+      });
+      if (error) {
+        toast.error(getAuthErrorMessage(error.code!, "en"));
+        return;
       }
+      toast.success("Display name updated successfully");
+      displayNameForm.reset();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update display name"
+      );
+    } finally {
+      setIsNameLoading(false);
+    }
+  };
 
-      setProfile(updatedProfile)
-      setIsLoading(false)
-
-      toast("Your profile has been updated successfully")
-    }, 1000)
-  }
+  const onPasswordSubmit = async (data: PasswordUpdateFormData) => {
+    if (isPasswordLoading) return;
+    try {
+      setIsPasswordLoading(true);
+      const { data: response, error } = await authClient.changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+      if (error) {
+        toast.error(getAuthErrorMessage(error.code!, "en"));
+        return;
+      }
+      toast.success("Password updated successfully");
+      passwordForm.reset();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update password"
+      );
+    } finally {
+      setIsPasswordLoading(false);
+    }
+  };
 
   return (
     <PageWrapper>
       <PageWrapper.Header
         title="Profile"
-        description="Manage your personal information and preferences"
+        description="Manage your account settings"
       />
       <PageWrapper.Content>
-        <div className="space-y-6 w-full">
-          <form onSubmit={handleProfileUpdate}>
-            <div className="space-y-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Personal Information</CardTitle>
-                  <CardDescription>Update your personal details</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-6 w-full max-w-2xl mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>Display Name</CardTitle>
+              <CardDescription>
+                Change how your name appears to others
+              </CardDescription>
+            </CardHeader>
+            <Form {...displayNameForm}>
+              <form
+                onSubmit={displayNameForm.handleSubmit(onDisplayNameSubmit)}
+              >
+                <CardContent>
+                  {isNameLoading ? (
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" name="name" defaultValue={profile.name} required />
+                      <Skeleton className="h-4 w-[100px]" />
+                      <Skeleton className="h-10 w-full" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" name="email" type="email" defaultValue={profile.email} required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="regNumber">Registration Number</Label>
-                      <Input id="regNumber" name="regNumber" defaultValue={profile.regNumber} required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="department">Department</Label>
-                      <Input id="department" name="department" defaultValue={profile.department} required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="year">Year of Study</Label>
-                      <Input id="year" name="year" defaultValue={profile.year} required />
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <Label htmlFor="bio">Bio</Label>
-                    <Textarea id="bio" name="bio" rows={4} defaultValue={profile.bio} />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="skills">Skills</Label>
-                    <Textarea id="skills" name="skills" rows={2} defaultValue={profile.skills} />
-                    <p className="text-xs text-muted-foreground">Separate skills with commas</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="interests">Interests</Label>
-                    <Textarea id="interests" name="interests" rows={2} defaultValue={profile.interests} />
-                    <p className="text-xs text-muted-foreground">Separate interests with commas</p>
-                  </div>
+                  ) : (
+                    <FormField
+                      control={displayNameForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? "Saving..." : "Save Changes"}
+                  <Button type="submit" disabled={isNameLoading}>
+                    {isNameLoading ? "Updating..." : "Update Name"}
                   </Button>
                 </CardFooter>
-              </Card>
+              </form>
+            </Form>
+          </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Account Security</CardTitle>
-                  <CardDescription>Update your password</CardDescription>
-                </CardHeader>
+          <Card>
+            <CardHeader>
+              <CardTitle>Password</CardTitle>
+              <CardDescription>Change your account password</CardDescription>
+            </CardHeader>
+            <Form {...passwordForm}>
+              <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
-                    <Input id="currentPassword" name="currentPassword" type="password" />
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="newPassword">New Password</Label>
-                      <Input id="newPassword" name="newPassword" type="password" />
+                  {isPasswordLoading ? (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[120px]" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[140px]" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                      <Input id="confirmPassword" name="confirmPassword" type="password" />
-                    </div>
-                  </div>
+                  ) : (
+                    <>
+                      <FormField
+                        control={passwordForm.control}
+                        name="currentPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Current Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={passwordForm.control}
+                        name="newPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>New Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={passwordForm.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Confirm New Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" type="button">
-                    Change Password
+                  <Button type="submit" disabled={isPasswordLoading}>
+                    {isPasswordLoading ? "Updating..." : "Update Password"}
                   </Button>
                 </CardFooter>
-              </Card>
-            </div>
-          </form>
+              </form>
+            </Form>
+          </Card>
         </div>
       </PageWrapper.Content>
     </PageWrapper>
-  )
+  );
 }
