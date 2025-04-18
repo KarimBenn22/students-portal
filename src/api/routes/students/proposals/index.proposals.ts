@@ -10,6 +10,13 @@ export default factories.student
       where: {
         proposerId: id,
       },
+      include: {
+        project: {
+          include: {
+            author: true,
+          },
+        },
+      },
     });
 
     return c.json(proposals);
@@ -31,6 +38,13 @@ export default factories.student
           },
         },
       },
+      include: {
+        project: {
+          include: {
+            author: true,
+          },
+        },
+      },
     });
 
     return c.json({
@@ -41,7 +55,16 @@ export default factories.student
   .delete("/:id", async (c) => {
     const { id } = c.req.param();
 
-    const proposal = await prisma.proposal.delete({ where: { id } });
+    const proposal = await prisma.proposal.delete({
+      where: { id },
+      include: {
+        project: {
+          include: {
+            author: true,
+          },
+        },
+      },
+    });
 
     return c.json({
       message: "Proposal deleted successfully",

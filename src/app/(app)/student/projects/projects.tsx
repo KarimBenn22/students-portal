@@ -17,22 +17,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
-import { createStudentProposal, Projects } from "@/fetchs/student.fetcher";
+import {
+  createStudentProposal,
+  type StudentProject,
+} from "@/fetchs/student.fetcher";
 import { Button } from "@/components/ui/button";
 import tryCatch from "@/helpers/trycatch";
 import { useRouter } from "next/navigation";
 
-
-
-
-
 interface ProjectsClientProps {
-  initialProjects: Projects[];
+  initialProjects: StudentProject[];
 }
 
 export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
+  const [selectedProject, setSelectedProject] = useState<StudentProject | null>(
+    null
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
@@ -42,11 +43,11 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
       project.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.specialty.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      project.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.title.toLowerCase().includes(searchQuery.toLocaleLowerCase())
   );
 
-  const handleApply = (project: Projects) => {
+  const handleApply = (project: StudentProject) => {
     setSelectedProject(project);
     setIsDialogOpen(true);
   };
@@ -59,8 +60,14 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
     const proposal = formData.get("proposal") as string;
 
     if (!selectedProject) return;
-    const {data, error} = await tryCatch(createStudentProposal(selectedProject.id));
-    if(error){
+    const { data, error } = await tryCatch(
+      createStudentProposal({
+        param: {
+          projectId: selectedProject.id,
+        },
+      })
+    );
+    if (error) {
       toast(error.message);
       setIsDialogOpen(false);
       return;

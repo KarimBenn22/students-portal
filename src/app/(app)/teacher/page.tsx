@@ -3,11 +3,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { BookOpen, CheckCircle, Clock, FileText, Users } from "lucide-react";
+
 export default function TeacherDashboardPage() {
   return (
     <PageWrapper>

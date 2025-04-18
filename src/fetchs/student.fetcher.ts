@@ -1,5 +1,4 @@
 import { honoClient } from "@/client/hono.client";
-import { InferRequest } from "better-auth";
 import { InferRequestType, InferResponseType } from "hono";
 
 // Projects routes
@@ -13,8 +12,11 @@ const studentProjectProposalRoute =
   honoClient.api.students.proposals[":projectId"];
 
 // Projects APIs
-export type Projects = InferResponseType<typeof studentProjectRoute.$get, 200>;
-export async function getStudentProjects(headers?: Record<any, any>) {
+export type StudentProject = InferResponseType<
+  typeof studentProjectRoute.$get,
+  200
+>;
+export async function getStudentProjects(headers?: Record<string, string>) {
   const res = await studentProjectsRoute.$get(
     { query: {} },
     {
@@ -31,7 +33,7 @@ export async function getStudentProjects(headers?: Record<any, any>) {
 }
 
 export async function getStudentProject(
-  input: InferRequestType<typeof studentProjectRoute>,
+  input: InferRequestType<typeof studentProjectRoute.$get>,
   headers?: Record<string, string>
 ) {
   const res = await studentProjectRoute.$get(input, { headers });
@@ -46,7 +48,7 @@ export async function getStudentProject(
 
 // Proposals APIs
 export async function getStudentProposals(
-  input: Record<string, never> = {},
+  input: InferRequestType<typeof studentProposalsRoute.$get>,
   headers?: Record<string, string>
 ) {
   const res = await studentProposalsRoute.$get(input, {
@@ -62,19 +64,10 @@ export async function getStudentProposals(
 }
 
 export async function createStudentProposal(
-  projectId: InferRequestType<
-    typeof studentProjectProposalRoute.$post
-  >["param"]["projectId"],
+  input: InferRequestType<typeof studentProjectProposalRoute.$post>,
   headers?: Record<string, string>
 ) {
-  const res = await studentProjectProposalRoute.$post(
-    {
-      param: {
-        projectId,
-      },
-    },
-    { headers }
-  );
+  const res = await studentProjectProposalRoute.$post(input, { headers });
   const data = await res.json();
 
   if (!res.ok) {
@@ -85,7 +78,7 @@ export async function createStudentProposal(
 }
 
 export async function deleteStudentProposal(
-  input: InferRequestType<typeof studentProposalRoute>,
+  input: InferRequestType<typeof studentProposalRoute.$delete>,
   headers?: Record<string, string>
 ) {
   const res = await studentProposalRoute.$delete(input, { headers });
