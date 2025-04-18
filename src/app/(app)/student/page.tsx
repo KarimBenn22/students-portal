@@ -13,11 +13,19 @@ import tryCatch from "@/helpers/trycatch";
 import { getStudentProposals } from "@/fetchs/student.fetcher";
 import { headers } from "next/headers";
 import { withHeaders } from "@/lib/server-utils";
+import { honoClient } from "@/client/hono.client";
 
 export default async function StudentDashboard() {
   const { data, error } = await tryCatch(
     getStudentProposals({}, await withHeaders())
   );
+  const { data: count, error: countError } = await tryCatch(
+    honoClient.api.students.projects.count.$get(
+      {},
+      { headers: await withHeaders() }
+    )
+  );
+  const projectCount = await count?.json();
   const applications = data || [];
   const pendingCount = applications.filter(
     (app) => app.status === "PENDING"
@@ -44,7 +52,9 @@ export default async function StudentDashboard() {
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">-</div>
+                <div className="text-2xl font-bold">
+                  {projectCount?.count || 0}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   Browse available projects
                 </p>
@@ -90,90 +100,94 @@ export default async function StudentDashboard() {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>My Applications</CardTitle>
-              <CardDescription>
-                Status of your project applications
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {applications.map((application, i) => (
-                  <div
-                    key={application.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {application.project.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {application.project.author.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(application.createdAt).toLocaleDateString()}
-                      </span>
-                      {application.status === "PENDING" && (
-                        <Clock className="h-4 w-4 text-yellow-500" />
-                      )}
-                      {application.status === "ACCEPTED" && (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      )}
-                      {application.status === "REJECTED" && (
-                        <XCircle className="h-4 w-4 text-red-500" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4">
-                <Link href="/student/applications">
-                  <Button variant="outline" size="sm" className="w-full">
-                    View All Applications
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Application Slots</CardTitle>
-              <CardDescription>
-                You can apply to a maximum of 3 projects
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <div className="w-full bg-muted rounded-full h-2.5">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>My Applications</CardTitle>
+                <CardDescription>
+                  Status of your project applications
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col h-full justify-between">
+                <div className="space-y-4">
+                  {applications.map((application, i) => (
                     <div
-                      className="bg-primary h-2.5 rounded-full"
-                      style={{ width: `${(totalApplications / 3) * 100}%` }}
-                    ></div>
+                      key={application.id}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {application.project.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {application.project.author.name}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(application.createdAt).toLocaleDateString()}
+                        </span>
+                        {application.status === "PENDING" && (
+                          <Clock className="h-4 w-4 text-yellow-500" />
+                        )}
+                        {application.status === "ACCEPTED" && (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        )}
+                        {application.status === "REJECTED" && (
+                          <XCircle className="h-4 w-4 text-red-500" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6">
+                  <Link href="/student/applications">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View All Applications
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Application Slots</CardTitle>
+                <CardDescription>
+                  You can apply to a maximum of 3 projects
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <div className="w-full bg-muted rounded-full h-2.5">
+                      <div
+                        className="bg-primary h-2.5 rounded-full"
+                        style={{ width: `${(totalApplications / 3) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="ml-4 text-sm font-medium">
+                      {totalApplications}/3 used
+                    </span>
                   </div>
-                  <span className="ml-4 text-sm font-medium">
-                    {totalApplications}/3 used
-                  </span>
-                </div>
 
-                <div className="text-sm text-muted-foreground">
-                  <p>
-                    You have {3 - totalApplications} application slot
-                    {3 - totalApplications !== 1 ? "s" : ""} remaining. Choose
-                    your projects carefully!
-                  </p>
-                </div>
+                  <div className="text-sm text-muted-foreground">
+                    <p>
+                      You have {3 - totalApplications} application slot
+                      {3 - totalApplications !== 1 ? "s" : ""} remaining. Choose
+                      your projects carefully!
+                    </p>
+                  </div>
 
-                <Link href="/student/projects">
-                  <Button className="w-full">Browse Available Projects</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+                  <Link href="/student/projects">
+                    <Button className="w-full">
+                      Browse Available Projects
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </PageWrapper.Content>
     </PageWrapper>
