@@ -16,7 +16,7 @@ export default function AuthLayout({
         <div className="absolute inset-0 bg-zinc-900 bg-[url('/uni-background.png')] bg-cover bg-center bg-no-repeat" />
       </div>
       <div className="lg:p-8 w-full">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 max-w-[400px] items-center">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 md:max-w-[400px] items-center">
           <Button asChild variant="ghost" className="w-fit mx-auto mb-4">
             <Link href="/signin">
               <Image src="/uni-logo.png" alt="University Logo" width={60} height={60} />
