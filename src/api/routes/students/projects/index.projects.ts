@@ -89,7 +89,6 @@ export default factories.student
 
     return c.json({
       ...project,
-      authorId: undefined,
       author: project.author.name,
     });
   });

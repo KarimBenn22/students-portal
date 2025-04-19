@@ -25,6 +25,23 @@ export default factories.student
     const { id } = c.var.session.user;
     const { projectId } = c.req.param();
 
+    // Check if the user already has a proposal for this project
+    const existingProposal = await prisma.proposal.findFirst({
+      where: {
+        proposerId: id,
+        projectId: projectId,
+      },
+    });
+
+    if (existingProposal) {
+      return c.json(
+        {
+          message: "You already have a proposal for this project",
+        },
+        400
+      );
+    }
+
     const proposal = await prisma.proposal.create({
       data: {
         proposer: {
@@ -69,5 +86,110 @@ export default factories.student
     return c.json({
       message: "Proposal deleted successfully",
       proposal,
+    });
+  })
+  .post("/:proposalId/lock-in", async (c) => {
+    const { id } = c.var.session.user;
+    const { proposalId } = c.req.param();
+
+    if (!proposalId) {
+      return c.json({ message: "Proposal ID is required" }, 400);
+    }
+
+    const proposal = await prisma.proposal.findFirst({
+      where: {
+        id: proposalId,
+        proposerId: id,
+        status: "ACCEPTED",
+      },
+    });
+
+    if (!proposal) {
+      return c.json(
+        {
+          message: "Proposal not found or not approved",
+        },
+        404
+      );
+    }
+
+    const existingLockedProposal = await prisma.proposal.findFirst({
+      where: {
+        proposerId: id,
+        lockedIn: true,
+      },
+    });
+
+    if (existingLockedProposal) {
+      return c.json(
+        {
+          message: "You already have a locked in project proposal",
+        },
+        400
+      );
+    }
+
+    const updatedProposal = await prisma.proposal.update({
+      where: { id: proposalId },
+      data: { lockedIn: true },
+      include: {
+        project: {
+          include: {
+            author: true,
+          },
+        },
+      },
+    });
+
+    return c.json({
+      message: "Proposal locked in successfully",
+      proposal: updatedProposal,
+    });
+  })
+  .post("/:proposalId/unlock-in", async (c) => {
+    const { id } = c.var.session.user;
+    const { proposalId } = c.req.param();
+
+    if (!proposalId) {
+      return c.json(
+        {
+          message: "Proposal ID is required",
+        },
+        400
+      );
+    }
+
+    const proposal = await prisma.proposal.findFirst({
+      where: {
+        id: proposalId,
+        proposerId: id,
+        lockedIn: true,
+      },
+    });
+
+    if (!proposal) {
+      return c.json(
+        {
+          message: "Locked-in proposal not found",
+        },
+        404
+      );
+    }
+
+    const updatedProposal = await prisma.proposal.update({
+      where: { id: proposalId },
+      data: { lockedIn: false },
+      include: {
+        project: {
+          include: {
+            author: true,
+          },
+        },
+      },
+    });
+
+    return c.json({
+      message: "Proposal unlocked successfully",
+      proposal: updatedProposal,
     });
   });
