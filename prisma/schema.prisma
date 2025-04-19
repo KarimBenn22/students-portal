@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id            String     @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  role          String?
-  sessions      Session[]
-  accounts      Account[]
-  projects      Project[]
-  proposals     Proposal[]
+  id                  String     @id
+  name                String
+  email               String
+  emailVerified       Boolean
+  image               String?
+  createdAt           DateTime
+  updatedAt           DateTime
+  role                String?
+  registerationNumber String?
+  specialty           String?
+  sessions            Session[]
+  accounts            Account[]
+  projects            Project[]
+  proposals           Proposal[]
 
   @@unique([email])
   @@map("user")

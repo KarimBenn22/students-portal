@@ -1,7 +1,10 @@
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import { auth } from "@/api/auth/index.auth";
 
 export const authClient = createAuthClient({
   baseURL: process.env.VERCEL_URL || "http://localhost:3000",
+  plugins: [inferAdditionalFields<typeof auth>()],
 });
 
 type ErrorTypes = Partial<

@@ -1,5 +1,6 @@
 import { prisma } from "@/api/db";
 import factories from "@/api/factories";
+import { Specialty } from "@prisma/client";
 
 export default factories.student
   .createApp()
@@ -22,7 +23,7 @@ export default factories.student
     return c.json(proposals);
   })
   .post("/:projectId", async (c) => {
-    const { id } = c.var.session.user;
+    const { id, specialty } = c.var.session.user;
     const { projectId } = c.req.param();
 
     // Check if the user already has a proposal for this project
@@ -37,6 +38,32 @@ export default factories.student
       return c.json(
         {
           message: "You already have a proposal for this project",
+        },
+        400
+      );
+    }
+
+    // Get project details to check specialty
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+
+    if (!project) {
+      return c.json(
+        {
+          message: "Project not found",
+        },
+        404
+      );
+    }
+
+    // Prevent creating proposal if project is in the same specialty as the student
+    if (project.specialty === specialty as Specialty) {
+      return c.json(
+        {
+          message: "You can only create proposals for projects outside your specialty",
         },
         400
       );
