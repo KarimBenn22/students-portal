@@ -31,29 +31,26 @@ interface ProjectsClientProps {
 
 export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProject, setSelectedProject] = useState<StudentProject | null>(
-    null
-  );
+  const [selectedProject, setSelectedProject] = useState<StudentProject | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
-  // Filter projects based on search query
   const filteredProjects = initialProjects.filter(
     (project) =>
       project.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.title.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+      project.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleApply = async (project: StudentProject) => {
     setSelectedProject(project);
-    if (!selectedProject) return;
+    if (!project) return;
     const { data, error } = await tryCatch(
       createStudentProposal({
         param: {
-          projectId: selectedProject.id,
+          projectId: project.id,
         },
       })
     );
@@ -68,25 +65,25 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
   return (
     <PageWrapper>
       <PageWrapper.Header
-        title="Browse Projects"
-        description="Explore available projects and apply to up to 3"
+        title="تصفح المشاريع"
+        description="استعرض المشاريع المتاحة وتقدم إلى 3 كحد أقصى"
       />
       <PageWrapper.Content>
         <div className="space-y-6 w-full">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2" dir="rtl">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search projects by title, description, category or teacher..."
-                className="pl-8"
+                placeholder="ابحث عن مشروع حسب العنوان أو الوصف أو الفئة أو الأستاذ..."
+                className="pr-8 text-right"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" dir="rtl">
             {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
@@ -97,10 +94,10 @@ export function ProjectsClient({ initialProjects }: ProjectsClientProps) {
           </div>
 
           {filteredProjects.length === 0 && (
-            <div className="text-center">
-              <h3 className="text-lg font-medium">No projects found</h3>
+            <div className="text-center" dir="rtl">
+              <h3 className="text-lg font-medium">لا توجد مشاريع</h3>
               <p className="text-muted-foreground">
-                Try adjusting your search query
+                جرّب تغيير عبارة البحث
               </p>
             </div>
           )}

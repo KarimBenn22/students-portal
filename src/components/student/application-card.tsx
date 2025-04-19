@@ -37,10 +37,10 @@ export function ApplicationCard({
   const StatusIcon = statusConfig[application.status].icon;
 
   return (
-    <Card className="group transition-all duration-200 hover:shadow-lg hover:border-primary/20">
+    <Card className="shadow-none">
       <CardHeader className="space-y-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg group-hover:text-primary transition-colors">
+          <CardTitle className="text-lg">
             {application.project.title}
           </CardTitle>
           <Badge

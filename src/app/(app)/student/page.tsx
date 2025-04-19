@@ -11,7 +11,6 @@ import { PageWrapper } from "@/components/layout/page-wrapper";
 import { BookOpen, CheckCircle, Clock, FileText, XCircle } from "lucide-react";
 import tryCatch from "@/helpers/trycatch";
 import { getStudentProposals } from "@/fetchs/student.fetcher";
-import { headers } from "next/headers";
 import { withHeaders } from "@/lib/server-utils";
 import { honoClient } from "@/client/hono.client";
 
@@ -38,16 +37,19 @@ export default async function StudentDashboard() {
   return (
     <PageWrapper>
       <PageWrapper.Header
-        title="Student Dashboard"
-        description="Browse projects and manage your applications"
+        title="لوحة تحكم الطالب"
+        description="تصفح المشاريع وإدارة طلباتك"
       />
       <PageWrapper.Content>
-        <div className="space-y-6 w-full">
+        <div
+          className="space-y-6 w-full **:data-[slot=card]:shadow-none **:data-[slot=card]:rounded-sm"
+          dir="rtl"
+        >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Available Projects
+                  المشاريع المتاحة
                 </CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -56,46 +58,44 @@ export default async function StudentDashboard() {
                   {projectCount?.count || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Browse available projects
+                  تصفح المشاريع المتاحة
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">طلباتي</CardTitle>
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{totalApplications}/3</div>
+                <p className="text-xs text-muted-foreground">
+                  الطلبات المستخدمة (الحد الأقصى 3)
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">المقبولة</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{acceptedCount}</div>
+                <p className="text-xs text-muted-foreground">
+                  الطلبات المقبولة
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  My Applications
+                  قيد الانتظار
                 </CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalApplications}/3</div>
-                <p className="text-xs text-muted-foreground">
-                  Applications used (max 3)
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Accepted</CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{acceptedCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  Application accepted
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{pendingCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  Awaiting response
-                </p>
+                <p className="text-xs text-muted-foreground">في انتظار الرد</p>
               </CardContent>
             </Card>
           </div>
@@ -103,10 +103,8 @@ export default async function StudentDashboard() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>My Applications</CardTitle>
-                <CardDescription>
-                  Status of your project applications
-                </CardDescription>
+                <CardTitle>طلباتي</CardTitle>
+                <CardDescription>حالة طلبات المشاريع الخاصة بك</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col h-full justify-between">
                 <div className="space-y-4">
@@ -143,7 +141,7 @@ export default async function StudentDashboard() {
                 <div className="mt-6">
                   <Link href="/student/applications">
                     <Button variant="outline" size="sm" className="w-full">
-                      View All Applications
+                      عرض جميع الطلبات
                     </Button>
                   </Link>
                 </div>
@@ -152,9 +150,9 @@ export default async function StudentDashboard() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Application Slots</CardTitle>
+                <CardTitle>فتحات الطلبات</CardTitle>
                 <CardDescription>
-                  You can apply to a maximum of 3 projects
+                  يمكنك التقدم إلى 3 مشاريع كحد أقصى
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -166,22 +164,22 @@ export default async function StudentDashboard() {
                         style={{ width: `${(totalApplications / 3) * 100}%` }}
                       ></div>
                     </div>
-                    <span className="ml-4 text-sm font-medium">
-                      {totalApplications}/3 used
+                    <span className="mr-4 text-sm font-medium">
+                      {totalApplications}/3 مستخدم
                     </span>
                   </div>
 
                   <div className="text-sm text-muted-foreground">
                     <p>
-                      You have {3 - totalApplications} application slot
-                      {3 - totalApplications !== 1 ? "s" : ""} remaining. Choose
-                      your projects carefully!
+                      لديك {3 - totalApplications} فتحة
+                      {3 - totalApplications !== 1 ? " فتحات" : ""} متبقية. اختر
+                      مشاريعك بعناية!
                     </p>
                   </div>
 
                   <Link href="/student/projects">
-                    <Button className="w-full">
-                      Browse Available Projects
+                    <Button size="sm" className="w-full">
+                      تصفح المشاريع المتاحة
                     </Button>
                   </Link>
                 </div>
