@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { openAPI } from "better-auth/plugins";
 import { prisma } from "../db";
-import specialties from "@/lib/constants/specialty.constant";
+import { Specialty } from "@prisma/client";
 
 export const auth = betterAuth({
   appName: "Finals Portal",
@@ -34,7 +34,7 @@ export const auth = betterAuth({
         type: "string",
         input: true,
         validator: {
-          input: z.enum(specialties),
+          input: z.nativeEnum(Specialty),
         },
       },
     },
