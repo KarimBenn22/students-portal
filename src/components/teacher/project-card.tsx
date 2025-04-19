@@ -12,7 +12,6 @@ import { useState } from "react";
 import { AddEditProjectModal } from "./modals/add-project.modal";
 import { TeacherProject } from "@/fetchs/teacher.fetcher";
 import { Badge } from "../ui/badge";
-import { InferResponseType } from "hono/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

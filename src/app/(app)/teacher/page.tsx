@@ -1,3 +1,4 @@
+import { honoClient } from "@/client/hono.client";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { withHeaders } from "@/lib/server-utils";
 import {
   BookOpen,
   CheckCircle,
@@ -16,7 +18,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function TeacherDashboardPage() {
+export default async function TeacherDashboardPage() {
+  // fetchers
+  const r = await honoClient.api.teachers.projects.count.$get({}, {
+    headers: await withHeaders()
+  });
+  const r1 = await honoClient.api.teachers.projects.popular.$get({}, {
+    headers: await withHeaders()
+  })
+  cosnt r2 = await honoClient.api.teachers.
+  console.log(await r.json())
+  console.log("r1: ", await r1.json());
   return (
     <PageWrapper>
       <PageWrapper.Header
