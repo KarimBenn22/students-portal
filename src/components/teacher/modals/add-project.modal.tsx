@@ -48,7 +48,7 @@ export function AddEditProjectModal({
     >
       {mode === "add" && (
         <DialogTrigger asChild>
-          <Button>{TRIGGR}</Button>
+          <Button size="sm">{TRIGGR}</Button>
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[500px]">

@@ -1,4 +1,5 @@
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,109 +7,119 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BookOpen, CheckCircle, Clock, FileText, Users } from "lucide-react";
+import {
+  BookOpen,
+  CheckCircle,
+  Clock,
+  FileText,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function TeacherDashboardPage() {
   return (
     <PageWrapper>
       <PageWrapper.Header
-        title="Overview"
-        description="Overview of your recent activity"
-      ></PageWrapper.Header>
+        title="نظرة عامة"
+        description="ملخص لآخر أنشطتك"
+      />
       <PageWrapper.Content>
-        <div className="space-y-6 w-full">
+        <div dir="rtl" className="space-y-6 w-full text-right font-sans">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Projects
+                  عدد المشاريع
                 </CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">12</div>
+                <div className="text-2xl font-bold">١٢</div>
                 <p className="text-xs text-muted-foreground">
-                  +2 from last month
+                  +٢ عن الشهر الماضي
                 </p>
               </CardContent>
             </Card>
-            <Card>
+
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Active Applications
+                  الطلبات النشطة
                 </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">24</div>
+                <div className="text-2xl font-bold">٢٤</div>
                 <p className="text-xs text-muted-foreground">
-                  +5 new applications
+                  +٥ طلبات جديدة
                 </p>
               </CardContent>
             </Card>
-            <Card>
+
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Accepted Students
+                  الطلاب المقبولون
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">18</div>
+                <div className="text-2xl font-bold">١٨</div>
                 <p className="text-xs text-muted-foreground">
-                  Across 7 projects
+                  موزعين على ٧ مشاريع
                 </p>
               </CardContent>
             </Card>
-            <Card>
+
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Pending Reviews
+                  المراجعات المعلقة
                 </CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">7</div>
+                <div className="text-2xl font-bold">٧</div>
                 <p className="text-xs text-muted-foreground">
-                  Requires your attention
+                  تحتاج إلى انتباهك
                 </p>
               </CardContent>
             </Card>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <Card className="col-span-1">
+            <Card className="col-span-1 shadow-none">
               <CardHeader>
-                <CardTitle>Recent Applications</CardTitle>
+                <CardTitle>الطلبات الأخيرة</CardTitle>
                 <CardDescription>
-                  Latest student applications to your projects
+                  أحدث طلبات الطلاب لمشاريعك
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {[
                     {
-                      project: "AI-Powered Learning Assistant",
-                      student: "Alex Johnson",
-                      date: "2 days ago",
+                      project: "مساعد تعليمي مدعوم بالذكاء الاصطناعي",
+                      student: "أليكس جونسون",
+                      date: "منذ يومين",
                       status: "pending",
                     },
                     {
-                      project: "Blockchain for Academic Records",
-                      student: "Maria Garcia",
-                      date: "3 days ago",
+                      project: "البلوك تشين للسجلات الأكاديمية",
+                      student: "ماريا غارسيا",
+                      date: "منذ ٣ أيام",
                       status: "pending",
                     },
                     {
-                      project: "VR Chemistry Lab",
-                      student: "James Wilson",
-                      date: "5 days ago",
+                      project: "مختبر الكيمياء بالواقع الافتراضي",
+                      student: "جيمس ويلسون",
+                      date: "منذ ٥ أيام",
                       status: "accepted",
                     },
                     {
-                      project: "AI-Powered Learning Assistant",
-                      student: "Sarah Ahmed",
-                      date: "1 week ago",
+                      project: "مساعد تعليمي مدعوم بالذكاء الاصطناعي",
+                      student: "سارة أحمد",
+                      date: "منذ أسبوع",
                       status: "rejected",
                     },
                   ].map((application, i) => (
@@ -137,39 +148,42 @@ export default function TeacherDashboardPage() {
                       </div>
                     </div>
                   ))}
+                  <Button size="sm" className="shadow-none w-full" variant="secondary">
+                    <Link href="/teacher/applications">عرض جميع الطلبات</Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="col-span-1">
+            <Card className="col-span-1 shadow-none">
               <CardHeader>
-                <CardTitle>Popular Projects</CardTitle>
+                <CardTitle>المشاريع الشائعة</CardTitle>
                 <CardDescription>
-                  Your most applied-to project proposals
+                  أكثر مشاريعك طلبًا من قبل الطلاب
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {[
                     {
-                      title: "AI-Powered Learning Assistant",
+                      title: "مساعد تعليمي مدعوم بالذكاء الاصطناعي",
                       applications: 12,
-                      category: "Artificial Intelligence",
+                      category: "الذكاء الاصطناعي",
                     },
                     {
-                      title: "Blockchain for Academic Records",
+                      title: "البلوك تشين للسجلات الأكاديمية",
                       applications: 8,
-                      category: "Blockchain",
+                      category: "البلوك تشين",
                     },
                     {
-                      title: "VR Chemistry Lab",
+                      title: "مختبر الكيمياء بالواقع الافتراضي",
                       applications: 7,
-                      category: "Virtual Reality",
+                      category: "الواقع الافتراضي",
                     },
                     {
-                      title: "Sustainable Campus IoT Network",
+                      title: "شبكة إنترنت الأشياء لحرم جامعي مستدام",
                       applications: 5,
-                      category: "Internet of Things",
+                      category: "إنترنت الأشياء",
                     },
                   ].map((project, i) => (
                     <div key={i} className="flex items-center justify-between">
@@ -182,10 +196,13 @@ export default function TeacherDashboardPage() {
                         </p>
                       </div>
                       <div className="text-sm font-medium">
-                        {project.applications} applications
+                        {project.applications} طلب
                       </div>
                     </div>
                   ))}
+                  <Button size="sm" className="shadow-none w-full" variant="secondary">
+                    <Link href="/teacher/projects">عرض جميع المشاريع</Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

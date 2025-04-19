@@ -46,7 +46,7 @@ export default async function StudentDashboard() {
           dir="rtl"
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   المشاريع المتاحة
@@ -62,7 +62,7 @@ export default async function StudentDashboard() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">طلباتي</CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
@@ -74,7 +74,7 @@ export default async function StudentDashboard() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">المقبولة</CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -86,7 +86,7 @@ export default async function StudentDashboard() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-none">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   قيد الانتظار
@@ -101,7 +101,7 @@ export default async function StudentDashboard() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle>طلباتي</CardTitle>
                 <CardDescription>حالة طلبات المشاريع الخاصة بك</CardDescription>
@@ -148,7 +148,7 @@ export default async function StudentDashboard() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle>فتحات الطلبات</CardTitle>
                 <CardDescription>
