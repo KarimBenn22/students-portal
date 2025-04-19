@@ -59,11 +59,12 @@ export default factories.student
       );
     }
 
-    // Prevent creating proposal if project is in the same specialty as the student
-    if (project.specialty === specialty as Specialty) {
+    // Prevent creating proposal if project is in the outside specialty of the student
+    if (project.specialty !== (specialty as Specialty)) {
       return c.json(
         {
-          message: "You can only create proposals for projects outside your specialty",
+          message:
+            "You can't create proposals for projects outside your specialty",
         },
         400
       );
