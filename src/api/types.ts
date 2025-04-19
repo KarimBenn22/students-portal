@@ -1,5 +1,8 @@
-import { Session, User } from "better-auth";
 import { Env } from "hono/types";
+import { auth } from "./auth/index.auth";
+
+export type User = typeof auth.$Infer.Session.user;
+export type Session = typeof auth.$Infer.Session.session;
 
 export interface BaseApiBindings extends Env {
   Variables: {

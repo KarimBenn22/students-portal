@@ -1,35 +1,19 @@
 import { prisma } from "@/api/db";
 import factories from "@/api/factories";
-import { projectsSearchSchema } from "@/lib/schemas/search.schema";
-import { zValidator } from "@hono/zod-validator";
+import { Specialty } from "@prisma/client";
 
 export default factories.student
   .createApp()
-  .get("/", zValidator("query", projectsSearchSchema), async (c) => {
-    const { q, page, limit, category, specialty } = c.req.valid("query");
-
-    const filter = {
-      AND: [
-        q
-          ? {
-              OR: [
-                { title: { contains: q, mode: "insensitive" as const } },
-                { description: { contains: q, mode: "insensitive" as const } },
-              ],
-            }
-          : {},
-        category ? { category } : {},
-        specialty ? { specialty } : {},
-      ],
-    };
+  .get("/", async (c) => {
+    const { user } = c.var.session;
 
     const projects = await prisma.project.findMany({
-      where: filter,
+      where: {
+        specialty: user.specialty as Specialty,
+      },
       include: {
         author: true,
       },
-      skip: (page - 1) * limit,
-      take: limit,
     });
 
     const detailedProjects = projects.map((project) => ({
@@ -38,30 +22,18 @@ export default factories.student
       author: project.author.name,
     }));
 
-    const totalProjects = await prisma.project.count({
-      where: filter,
-    });
-
     return c.json({
       projects: detailedProjects,
-      pagenation: {
-        currentPage: page,
-        totalPages: Math.ceil(totalProjects / limit),
-        totalItems: totalProjects,
-        limit,
-        hasMore: page < Math.ceil(totalProjects / limit),
-        prevPage: page > 1 ? page - 1 : null,
-        naxtPage: page < Math.ceil(totalProjects / limit) ? page + 1 : null,
-      },
-      filters: {
-        query: q,
-        category,
-        specialty,
-      },
     });
   })
   .get("/count", async (c) => {
-    const count = await prisma.project.count();
+    const { user } = c.var.session;
+
+    const count = await prisma.project.count({
+      where: {
+        specialty: user.specialty as Specialty,
+      },
+    });
 
     return c.json({ count });
   })
@@ -77,7 +49,7 @@ export default factories.student
       },
     });
 
-    if (!project) {
+    if (!project || project.specialty !== c.var.session.user.specialty) {
       return c.json(
         {
           code: "NOT_FOUND",
