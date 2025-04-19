@@ -36,34 +36,38 @@ export function ApplicationsClient({
   return (
     <PageWrapper>
       <PageWrapper.Header
-        title="My Applications"
-        description="Track the status of your project applications"
+        title="طلباتي"
+        description="تتبع حالة طلبات مشاريعك"
       />
+
       <PageWrapper.Content>
         <div className="space-y-6 w-full">
           <Tabs defaultValue="all">
-            <TabsList>
+            <TabsList className="flex-row-reverse">
               <TabsTrigger value="all">
-                All ({initialApplications.length})
+                الكل ({initialApplications.length})
               </TabsTrigger>
               <TabsTrigger value="pending">
-                Pending ({pendingApplications.length})
+                قيد المراجعة ({pendingApplications.length})
               </TabsTrigger>
               <TabsTrigger value="accepted">
-                Accepted ({acceptedApplications.length})
+                مقبول ({acceptedApplications.length})
               </TabsTrigger>
               <TabsTrigger value="rejected">
-                Rejected ({rejectedApplications.length})
+                مرفوض ({rejectedApplications.length})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="mt-6">
               {initialApplications.length === 0 ? (
                 <p className="text-center py-8 text-muted-foreground">
-                  You haven't applied to any projects yet
+                  لم تقم بتقديم أي طلبات حتى الآن
                 </p>
               ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div
+                  className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                  dir="rtl"
+                >
                   {initialApplications.map((application) => (
                     <ApplicationCard
                       key={application.id}
@@ -78,10 +82,13 @@ export function ApplicationsClient({
             <TabsContent value="pending" className="mt-6">
               {pendingApplications.length === 0 ? (
                 <p className="text-center py-8 text-muted-foreground">
-                  No pending applications
+                  لا توجد طلبات قيد المراجعة
                 </p>
               ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div
+                  className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                  dir="rtl"
+                >
                   {pendingApplications.map((application) => (
                     <ApplicationCard
                       key={application.id}
@@ -96,10 +103,13 @@ export function ApplicationsClient({
             <TabsContent value="accepted" className="mt-6">
               {acceptedApplications.length === 0 ? (
                 <p className="text-center py-8 text-muted-foreground">
-                  No accepted applications
+                  لا توجد طلبات مقبولة
                 </p>
               ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div
+                  className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                  dir="rtl"
+                >
                   {acceptedApplications.map((application) => (
                     <ApplicationCard
                       key={application.id}
@@ -114,10 +124,13 @@ export function ApplicationsClient({
             <TabsContent value="rejected" className="mt-6">
               {rejectedApplications.length === 0 ? (
                 <p className="text-center py-8 text-muted-foreground">
-                  No rejected applications
+                  لا توجد طلبات مرفوضة
                 </p>
               ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div
+                  className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                  dir="rtl"
+                >
                   {rejectedApplications.map((application) => (
                     <ApplicationCard
                       key={application.id}

@@ -22,14 +22,14 @@ import {
 import { Specialty } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { honoClient } from "@/client/hono.client";
-import { ProjectCardProps } from "../project-card";
+import { TeacherProject } from "@/fetchs/teacher.fetcher";
 
-function EditProjectForm(data: ProjectCardProps) {
-  console.log("category: ", data.speciality);
+function EditProjectForm(data: TeacherProject) {
+  console.log("category: ", data.specialty);
   const form = useForm<z.infer<typeof projectInsertSchema>>({
     defaultValues: {
       title: data.title,
-      specialty: data.speciality.replace(" ", "_") as z.infer<
+      specialty: data.specialty.replace(" ", "_") as z.infer<
         typeof projectInsertSchema
       >["specialty"],
       description: data.description,

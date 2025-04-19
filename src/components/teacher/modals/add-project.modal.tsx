@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { AddProjectForm } from "../forms/add-project-form";
 import { EditProjectForm } from "../forms/edit-project-form";
-import { ProjectCardProps } from "../project-card";
+import { TeacherProject } from "@/fetchs/teacher.fetcher";
 
 type mode = "add" | "edit";
 
@@ -23,7 +23,7 @@ export function AddEditProjectModal({
   setIsOpen,
 }: {
   mode: mode;
-  data?: ProjectCardProps;
+  data?: TeacherProject;
   isOpen?: boolean;
   setIsOpen?: (value: boolean) => void;
 }) {
@@ -48,7 +48,7 @@ export function AddEditProjectModal({
     >
       {mode === "add" && (
         <DialogTrigger asChild>
-          <Button>{TRIGGR}</Button>
+          <Button size="sm">{TRIGGR}</Button>
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[500px]">
