@@ -22,8 +22,13 @@ import {
 import { Specialty } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { honoClient } from "@/client/hono.client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useState } from "react";
 
-function AddProjectForm() {
+function AddProjectForm({ onSuccess }: { onSuccess: () => void }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof projectInsertSchema>>({
     defaultValues: {
       category: "",
@@ -32,52 +37,61 @@ function AddProjectForm() {
       description: "",
     },
   });
+
   const specialties = Object.values(Specialty);
-  // form submission
+
   const onSubmit = async (payload: z.infer<typeof projectInsertSchema>) => {
-    console.log(payload);
-    const response = honoClient.api.teachers.projects.$post({ json: payload });
-    console.log((await response).json());
+    setLoading(true);
+    const response = await honoClient.api.teachers.projects.$post({ json: payload });
+    if (response.ok) {
+      onSuccess();
+      router.refresh();
+    }
+    else {
+      toast.error("حدثت مشكلة اثناء انشاء مشروع");
+      onSuccess(); // this only closes modal tho
+    }
   };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" dir="rtl">
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>عنوان المشروع</FormLabel>
               <FormControl>
-                <Input placeholder="Enter project title" {...field}></Input>
+                <Input placeholder="أدخل عنوان المشروع" {...field} />
               </FormControl>
-              <FormMessage></FormMessage>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>وصف المشروع</FormLabel>
               <FormControl>
-                <Textarea className="resize-none" {...field}></Textarea>
+                <Textarea className="resize-none" placeholder="أدخل وصف المشروع" {...field} />
               </FormControl>
-              <FormMessage></FormMessage>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="specialty"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Speciality</FormLabel>
+              <FormLabel>التخصص</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a speciality"></SelectValue>
+                    <SelectValue placeholder="اختر التخصص" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -88,23 +102,25 @@ function AddProjectForm() {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>الفئة</FormLabel>
               <FormControl>
-                <Input placeholder="Enter a category" {...field}></Input>
+                <Input placeholder="أدخل فئة المشروع" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
-        <Button type="submit" size="sm" className="float-right">
-          Create
+        />
+        <Button type="submit" size="sm" className="float-left" loading={loading}>
+          إنشاء
         </Button>
       </form>
     </Form>

@@ -11,8 +11,8 @@ export default async function TeacherProjectsPage() {
   return (
     <PageWrapper>
       <PageWrapper.Header
-        title="Projects"
-        description="Manage your available projects"
+        title="مشاريعي"
+        description="سير مشاريعك المتاحة"
       >
         <AddEditProjectModal mode="add" />
       </PageWrapper.Header>

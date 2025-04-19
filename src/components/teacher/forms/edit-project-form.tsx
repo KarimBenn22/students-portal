@@ -23,70 +23,83 @@ import { Specialty } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { honoClient } from "@/client/hono.client";
 import { TeacherProject } from "@/fetchs/teacher.fetcher";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-function EditProjectForm(data: TeacherProject) {
-  console.log("category: ", data.specialty);
+function EditProjectForm({ data, onSuccess }: { data: TeacherProject, onSuccess: () => void }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof projectInsertSchema>>({
     defaultValues: {
       title: data.title,
       specialty: data.specialty.replace(" ", "_") as z.infer<
         typeof projectInsertSchema
       >["specialty"],
-      description: data.description,
+      description: data.description ?? "",
       category: data.category,
     },
   });
+
   const specialties = Object.values(Specialty);
-  // form submission
+
   const onSubmit = async (payload: z.infer<typeof projectInsertSchema>) => {
-    console.log(payload);
-    const response = honoClient.api.teachers.projects[":id"].$patch({
+    setLoading(true);
+    const response = await honoClient.api.teachers.projects[":id"].$patch({
       param: {
         id: data.id,
       },
       json: payload,
     });
-    console.log((await response).json());
+    if (response.ok) {
+      onSuccess();
+      router.refresh();
+    }
+    else {
+      toast.error("حدثت مشكلة اثناء تعديل المشروع");
+      onSuccess(); // only closes modal, name should be refactored
+    }
   };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" dir="rtl">
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>عنوان المشروع</FormLabel>
               <FormControl>
-                <Input placeholder="Enter project title" {...field}></Input>
+                <Input placeholder="أدخل عنوان المشروع" {...field} />
               </FormControl>
-              <FormMessage></FormMessage>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>وصف المشروع</FormLabel>
               <FormControl>
-                <Textarea className="resize-none" {...field}></Textarea>
+                <Textarea className="resize-none" placeholder="أدخل وصف المشروع" {...field} />
               </FormControl>
-              <FormMessage></FormMessage>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="specialty"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Speciality</FormLabel>
+              <FormLabel>التخصص</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a speciality"></SelectValue>
+                    <SelectValue placeholder="اختر التخصص" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -97,23 +110,25 @@ function EditProjectForm(data: TeacherProject) {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>الفئة</FormLabel>
               <FormControl>
-                <Input placeholder="Enter a category" {...field}></Input>
+                <Input placeholder="أدخل فئة المشروع" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
-        ></FormField>
-        <Button type="submit" size="sm" className="float-right">
-          Edit
+        />
+        <Button type="submit" size="sm" className="float-left" loading={loading}>
+          تعديل
         </Button>
       </form>
     </Form>

@@ -11,12 +11,16 @@ import { Ellipsis } from "lucide-react";
 import { useState } from "react";
 import { AddEditProjectModal } from "./modals/add-project.modal";
 import { TeacherProject } from "@/fetchs/teacher.fetcher";
+import { Badge } from "../ui/badge";
+import { InferResponseType } from "hono/client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function ProjectCard({ project }: { project: TeacherProject }) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-gray-300 space-y-2">
+    <div className="overflow-hidden rounded-sm border bg-white p-6 transition-all space-y-2">
       <AddEditProjectModal
         mode="edit"
         data={project}
@@ -24,9 +28,9 @@ function ProjectCard({ project }: { project: TeacherProject }) {
         setIsOpen={(value: boolean) => setOpen(value)}
       />
       <div className="flex items-center justify-between">
-        <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-600">
+        <Badge className="rounded-full text-sm" variant={"default"}>
           {project.specialty}
-        </span>
+        </Badge>
         <ProjectMenu projectId={project.id} openModal={() => setOpen(true)} />
       </div>
 
@@ -38,7 +42,7 @@ function ProjectCard({ project }: { project: TeacherProject }) {
       </div>
 
       <div className="flex flex-wrap gap-2 items-center justify-between">
-        <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600">
+        <span className="rounded-full bg-gray-100 px-2 py-1 text-sm text-gray-600">
           {project.category}
         </span>
         <span className="text-sm text-gray-500">{project.createdAt}</span>
@@ -47,15 +51,7 @@ function ProjectCard({ project }: { project: TeacherProject }) {
   );
 }
 
-const removeProject = async (projectId: string) => {
-  const response = await honoClient.api.teachers.projects[":id"].$delete({
-    param: {
-      id: projectId,
-    },
-  });
-  console.log(response);
-  return response;
-};
+
 
 function ProjectMenu({
   projectId,
@@ -64,20 +60,36 @@ function ProjectMenu({
   projectId: string;
   openModal: () => void;
 }) {
+  const router = useRouter();
+  const removeProject = async (projectId: string) => {
+    const response = await honoClient.api.teachers.projects[":id"].$delete({
+      param: {
+        id: projectId,
+      },
+    });
+    if (response.ok) {
+      router.refresh();
+      toast.success("تم حذف المشروع بنجاح");
+    }
+    else {
+      toast.error("حدثت مشكلة اثناء حذف المشروع")
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Ellipsis></Ellipsis>
+        <Ellipsis />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Project Actions</DropdownMenuLabel>
+      <DropdownMenuContent dir="rtl" className="text-right">
+        <DropdownMenuLabel>إجراءات المشروع</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={openModal}>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={openModal}>تعديل</DropdownMenuItem>
         <DropdownMenuItem onClick={async () => await removeProject(projectId)}>
-          Remove
+          حذف
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
 export { ProjectCard };
