@@ -20,7 +20,6 @@ export default async function StudentDashboard() {
   );
   const { data: count, error: countError } = await tryCatch(
     honoClient.api.students.projects.count.$get(
-      {},
       { headers: await withHeaders() }
     )
   );
