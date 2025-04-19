@@ -9,14 +9,14 @@ import { SignInForm } from "@/components/auth/signin/signin-form";
 
 export default function SignInPage() {
   return (
-    <Card className="shadow-none border-0">
+    <Card className="shadow-none border-0 w-full" dir="rtl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+        <CardTitle className="text-2xl text-center">تسجيل الدخول</CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access your account
+          أدخل بيانات الاعتماد للوصول إلى حسابك
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="w-full">
         <SignInForm />
       </CardContent>
     </Card>

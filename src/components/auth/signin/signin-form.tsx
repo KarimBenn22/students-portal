@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -26,31 +27,37 @@ const defaultValues: SignInFormValues = {
 
 function SignInForm() {
   const router = useRouter();
+  const [loading,setLoading] = useState<boolean>(false);
   const form = useForm<SignInFormValues>({
     defaultValues,
   });
 
   async function onSubmit(values: SignInFormValues) {
+    setLoading(true);
     const { data, error } = await authClient.signIn.email(values);
     if (error) {
-      toast.error(getAuthErrorMessage(error.code!, "en"));
+      toast.error(getAuthErrorMessage(error.code!, "ar"));
+      setLoading(false);
       return;
     }
 
     console.log(data);
-
     router.push("/");
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 w-full"
+        dir="rtl"
+      >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>البريد الإلكتروني</FormLabel>
               <FormControl>
                 <Input
                   placeholder="example@univ-msila.dz"
@@ -67,7 +74,7 @@ function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>كلمة المرور</FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -80,8 +87,8 @@ function SignInForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Sign In
+        <Button type="submit" className="w-full" size="sm" loading={loading}>
+          تسجيل الدخول
         </Button>
       </form>
     </Form>
