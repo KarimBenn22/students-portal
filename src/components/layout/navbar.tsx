@@ -31,13 +31,13 @@ const teacherRoutes = [
   { href: "/teacher", label: "لوحة التحكم" },
   { href: "/teacher/projects", label: "المشاريع" },
   { href: "/teacher/applications", label: "الطلبات" },
-  { href: "/teacher/settings", label: "الإعدادات" },
 ];
 
 export function Navbar() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
-  const routes = session?.user.role === "teacher" ? teacherRoutes : studentRoutes;
+  const routes =
+    session?.user.role === "teacher" ? teacherRoutes : studentRoutes;
 
   const getInitials = (name: string) => {
     return name
@@ -71,10 +71,7 @@ export function Navbar() {
         <div className="mr-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative h-8 w-8 rounded-full"
-              >
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback>
                     {getInitials(session?.user.name || "مستخدم")}
