@@ -7,7 +7,7 @@ import { Specialty } from "@prisma/client";
 
 export const auth = betterAuth({
   appName: "Finals Portal",
-  baseURL: process.env.VERCEL_URL || "http://localhost:3000",
+  baseURL: `https://${process.env.VERCEL_URL}` || "http://localhost:3000",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
