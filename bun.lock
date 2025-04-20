@@ -59,6 +59,7 @@
         "zod": "^3.24.2",
       },
       "devDependencies": {
+        "@better-fetch/fetch": "^1.1.18",
         "@eslint/eslintrc": "^3",
         "@faker-js/faker": "^9.7.0",
         "@tailwindcss/postcss": "^4",

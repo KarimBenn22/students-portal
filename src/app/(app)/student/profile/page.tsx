@@ -61,9 +61,6 @@ type PasswordFormData = z.infer<typeof passwordSchema>;
 
 export default function StudentProfile() {
   const { data: session, isPending } = authClient.useSession();
-  useEffect(() => {
-    console.log(session);
-  })
   const isLoading = isPending;
   const [isInfoLoading, setIsInfoLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);

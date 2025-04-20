@@ -41,7 +41,6 @@ function SignInForm() {
       return;
     }
 
-    console.log(data);
     router.push("/");
   }
 

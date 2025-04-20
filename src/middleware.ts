@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authClient } from "./client/auth.client";
+import { betterFetch } from "@better-fetch/fetch";
+import { User } from "@prisma/client";
+import { Session } from "./api/types";
 
 function createRouteMatcher(paths: string[]) {
   return (request: NextRequest): boolean => {
@@ -21,13 +23,15 @@ const isTeacherRoute = createRouteMatcher(["/teacher", "/teacher/*"]);
 const isStudentRoute = createRouteMatcher(["/student", "/student/*"]);
 
 export default async function middleware(request: NextRequest) {
-  const { data: session } = await authClient.getSession({
-    fetchOptions: {
+  const { data: session } = await betterFetch<{ session: Session; user: User }>(
+    "/api/auth/get-session",
+    {
+      baseURL: request.nextUrl.origin,
       headers: {
         cookie: request.headers.get("cookie") ?? "",
       },
-    },
-  });
+    }
+  );
 
   if (request.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/signin", request.url));

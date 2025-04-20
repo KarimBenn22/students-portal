@@ -44,7 +44,6 @@ export default async function TeacherDashboardPage() {
     projectsCount = (await projectsCountRes.json()).projectsCount;
     popularProjects = await popularProjectsRes.json();
     recentProposals = (await recentProposalsRes.json()).proposals;
-    console.log(recentProposals);
     acceptedCount = (await acceptedCountRes.json()).proposals.length;
     pendingCount = (await pendingCountRes.json()).proposals.length;
     activeCount = (await activeCountRes.json()).proposals.length;
