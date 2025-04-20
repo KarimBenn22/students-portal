@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const studentRoutes = [
   { href: "/student", label: "لوحة التحكم" },
@@ -55,18 +56,23 @@ export function Navbar() {
 
   return (
     <div className="border-b" dir="rtl">
-      <div className="flex h-16 items-center px-4 container">
+      <div className="flex h-16 items-center justify-between px-4 container max-w-7xl mx-auto">
+        <div className="font-semibold text-lg hidden md:block">
+          بوابة المشاريع
+        </div>
+
         <NavigationMenu>
-          <NavigationMenuList className="gap-6">
+          <NavigationMenuList className="gap-1 md:gap-6">
             {routes.map((route) => (
               <NavigationMenuItem key={route.href}>
                 <Link
                   href={route.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                  className={cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none disabled:pointer-events-none disabled:opacity-50",
                     pathname === route.href
-                      ? "text-foreground"
-                      : "text-foreground/60"
-                  }`}
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-muted-foreground"
+                  )}
                 >
                   {route.label}
                 </Link>
@@ -74,12 +80,22 @@ export function Navbar() {
             ))}
           </NavigationMenuList>
         </NavigationMenu>
-        <div className="mr-auto flex items-center gap-2">
+
+        <div className="flex items-center gap-4">
+          <div className="hidden md:block text-right">
+            <p className="text-sm font-medium">{session?.user.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {session?.user.role === "teacher" ? "أستاذ" : "طالب"}
+            </p>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full ring-2 ring-muted hover:ring-ring hover:bg-accent"
+              >
+                <Avatar className="h-9 w-9">
+                  <AvatarFallback className="bg-primary/10 text-primary">
                     {getInitials(session?.user.name || "مستخدم")}
                   </AvatarFallback>
                 </Avatar>
@@ -104,14 +120,14 @@ export function Navbar() {
                       ? "/teacher/settings"
                       : "/student/profile"
                   }
-                  className="w-full cursor-pointer"
+                  className="w-full cursor-pointer focus:bg-accent"
                 >
                   <User className="ml-2 h-4 w-4" />
                   <span>الملف الشخصي</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="cursor-pointer"
+                className="cursor-pointer focus:bg-accent text-red-500 focus:text-red-500"
                 onClick={handleSignOut}
               >
                 <LogOut className="ml-2 h-4 w-4" />

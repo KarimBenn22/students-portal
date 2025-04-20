@@ -19,9 +19,9 @@ export default async function StudentDashboard() {
     getStudentProposals({}, await withHeaders())
   );
   const { data: count, error: countError } = await tryCatch(
-    honoClient.api.students.projects.count.$get(
-      { headers: await withHeaders() }
-    )
+    honoClient.api.students.projects.count.$get({
+      headers: await withHeaders(),
+    })
   );
   const projectCount = await count?.json();
   const applications = data || [];
@@ -138,8 +138,12 @@ export default async function StudentDashboard() {
                   ))}
                 </div>
                 <div className="mt-6">
-                  <Link href="/student/applications">
-                    <Button variant="outline" size="sm" className="w-full">
+                  <Link href="/student/applications" className="w-full block">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
                       عرض جميع الطلبات
                     </Button>
                   </Link>
@@ -176,8 +180,11 @@ export default async function StudentDashboard() {
                     </p>
                   </div>
 
-                  <Link href="/student/projects">
-                    <Button size="sm" className="w-full">
+                  <Link href="/student/projects" className="w-full block">
+                    <Button
+                      size="sm"
+                      className="w-full"
+                    >
                       تصفح المشاريع المتاحة
                     </Button>
                   </Link>
