@@ -1,3 +1,4 @@
+import { SignUpForm } from "@/components/auth/signup/signup-form";
 import {
   Card,
   CardContent,
@@ -6,26 +7,25 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { SignInForm } from "@/components/auth/signin/signin-form";
 import Link from "next/link";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <Card className="shadow-none border-0 w-full bg-transparent" dir="rtl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">تسجيل الدخول</CardTitle>
+        <CardTitle className="text-2xl text-center">إنشاء حساب</CardTitle>
         <CardDescription className="text-center">
-          أدخل بيانات الاعتماد للوصول إلى حسابك
+          أدخل بياناتك لإنشاء حساب جديد
         </CardDescription>
       </CardHeader>
       <CardContent className="w-full">
-        <SignInForm />
+        <SignUpForm />
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          ليس لديك حساب؟{" "}
-          <Link href="/signup" className="text-primary hover:underline">
-            إنشاء حساب
+          لديك حساب بالفعل؟{" "}
+          <Link href="/signin" className="text-primary hover:underline">
+            تسجيل الدخول
           </Link>
         </p>
       </CardFooter>
