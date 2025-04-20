@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { withHeaders } from "@/lib/server-utils";
+import timeAgo from "@/lib/utils";
 import { BookOpen, CheckCircle, Clock, FileText, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -106,7 +107,7 @@ export default async function TeacherDashboardPage() {
                           {application.proposer.specialty}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {new Date(application.createdAt).toLocaleString()}
+                          {timeAgo(new Date(application.createdAt))}
                         </span>
                         {application.status === "pending" && (
                           <Clock className="h-4 w-4 text-yellow-500" />

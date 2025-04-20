@@ -13,6 +13,7 @@ import tryCatch from "@/helpers/trycatch";
 import { getStudentProposals } from "@/fetchs/student.fetcher";
 import { withHeaders } from "@/lib/server-utils";
 import { honoClient } from "@/client/hono.client";
+import timeAgo from "@/lib/utils";
 
 export default async function StudentDashboard() {
   const { data, error } = await tryCatch(
@@ -122,7 +123,7 @@ export default async function StudentDashboard() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">
-                          {new Date(application.createdAt).toLocaleDateString()}
+                          {timeAgo(new Date(application.createdAt))}
                         </span>
                         {application.status === "PENDING" && (
                           <Clock className="h-4 w-4 text-yellow-500" />

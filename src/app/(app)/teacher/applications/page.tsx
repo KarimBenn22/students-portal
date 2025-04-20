@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, LockIcon } from "lucide-react";
 import ReviewButtons from "./review-buttons";
+import timeAgo from "@/lib/utils";
 
 export default async function TeacherApplicationsPage() {
   const response = await honoClient.api.teachers.proposals.$get(
@@ -65,7 +66,7 @@ function ProposalCard({ proposal }) {
   const status = statusMap[proposal.status];
   const isPending = proposal.status === "PENDING";
   const isLockedIn = proposal.status === "ACCEPTED" && proposal.lockedIn;
-  const formattedDate = new Date(proposal.createdAt).toLocaleDateString();
+  const formattedDate = timeAgo(new Date(proposal.createdAt));
 
   return (
     <Card>
