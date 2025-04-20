@@ -130,7 +130,7 @@ export default factories.teacher
     if (!proposal) {
       return c.json(
         {
-          message: "Proposal not found or already processed",
+          message: "المقترح غير موجود أو تمت معالجته بالفعل",
         },
         404
       );
@@ -147,7 +147,7 @@ export default factories.teacher
     });
 
     return c.json({
-      message: "Proposal accepted successfully",
+      message: "تم قبول المقترح بنجاح",
       proposal: updatedProposal,
     });
   })
@@ -172,7 +172,7 @@ export default factories.teacher
     if (!proposal) {
       return c.json(
         {
-          message: "Proposal not found or already processed",
+          message: "المقترح غير موجود أو تمت معالجته بالفعل",
         },
         404
       );
@@ -189,7 +189,7 @@ export default factories.teacher
     });
 
     return c.json({
-      message: "Proposal rejected successfully",
+      message: "تم رفض المقترح بنجاح",
       proposal: updatedProposal,
     });
   })

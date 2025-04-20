@@ -6,6 +6,6 @@ import teacherProposalsRoute from "./proposals/index.proposals";
 export default factories.teacher
   .createApp()
   .use(roleMiddleware("teacher"))
-  .get("/", (c) => c.text("Teachers APIs"))
+  .get("/", (c) => c.text("واجهات برمجة المعلمين"))
   .route("/projects", teacherProjectsRoute)
   .route("/proposals", teacherProposalsRoute);

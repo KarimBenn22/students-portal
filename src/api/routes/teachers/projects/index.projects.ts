@@ -35,8 +35,8 @@ export default factories.teacher
     });
 
     return c.json({
+      message: "تم إنشاء المشروع بنجاح",
       project,
-      message: "Project created successfully",
     });
   })
   .patch("/:id", zValidator("json", projectUpdateSchema), async (c) => {
@@ -53,8 +53,8 @@ export default factories.teacher
     });
 
     return c.json({
+      message: "تم تحديث المشروع بنجاح",
       project,
-      message: "Project updated successfully",
     });
   })
   .delete("/:id", async (c) => {
@@ -69,8 +69,7 @@ export default factories.teacher
     });
 
     return c.json({
-      project,
-      message: "Project deleted successfully",
+      message: "تم حذف المشروع بنجاح",
     });
   })
   .get("/count", async (c) => {

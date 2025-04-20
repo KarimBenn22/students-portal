@@ -53,7 +53,7 @@ export default factories.student
       return c.json(
         {
           code: "NOT_FOUND",
-          message: "Project not found",
+          message: "المشروع غير موجود",
         },
         404
       );
