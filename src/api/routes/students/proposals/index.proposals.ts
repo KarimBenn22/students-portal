@@ -37,7 +37,7 @@ export default factories.student
     if (existingProposal) {
       return c.json(
         {
-          message: "You already have a proposal for this project",
+          message: "لديك بالفعل اقتراح لهذا المشروع",
         },
         400
       );
@@ -53,7 +53,7 @@ export default factories.student
     if (!project) {
       return c.json(
         {
-          message: "Project not found",
+          message: "المشروع غير موجود",
         },
         404
       );
@@ -64,7 +64,23 @@ export default factories.student
       return c.json(
         {
           message:
-            "You can't create proposals for projects outside your specialty",
+            "لا يمكنك إنشاء اقتراحات لمشاريع خارج تخصصك",
+        },
+        400
+      );
+    }
+
+    // Check if user already has 3 proposals
+    const userProposalsCount = await prisma.proposal.count({
+      where: {
+        proposerId: id
+      }
+    });
+
+    if (userProposalsCount >= 3) {
+      return c.json(
+        {
+          message: "لا يمكنك إنشاء أكثر من 3 اقتراحات",
         },
         400
       );
@@ -93,7 +109,7 @@ export default factories.student
     });
 
     return c.json({
-      message: "Proposal created successfully",
+      message: "تم إنشاء الاقتراح بنجاح",
       proposal,
     });
   })
@@ -112,7 +128,7 @@ export default factories.student
     });
 
     return c.json({
-      message: "Proposal deleted successfully",
+      message: "تم حذف الاقتراح بنجاح",
       proposal,
     });
   })
@@ -121,7 +137,7 @@ export default factories.student
     const { proposalId } = c.req.param();
 
     if (!proposalId) {
-      return c.json({ message: "Proposal ID is required" }, 400);
+      return c.json({ message: "معرّف الاقتراح مطلوب" }, 400);
     }
 
     const proposal = await prisma.proposal.findFirst({
@@ -135,7 +151,7 @@ export default factories.student
     if (!proposal) {
       return c.json(
         {
-          message: "Proposal not found or not approved",
+          message: "الاقتراح غير موجود أو لم تتم الموافقة عليه",
         },
         404
       );
@@ -151,7 +167,7 @@ export default factories.student
     if (existingLockedProposal) {
       return c.json(
         {
-          message: "You already have a locked in project proposal",
+          message: "لديك بالفعل اقتراح مشروع مقفل",
         },
         400
       );
@@ -170,7 +186,7 @@ export default factories.student
     });
 
     return c.json({
-      message: "Proposal locked in successfully",
+      message: "تم قفل الاقتراح بنجاح",
       proposal: updatedProposal,
     });
   })
@@ -181,7 +197,7 @@ export default factories.student
     if (!proposalId) {
       return c.json(
         {
-          message: "Proposal ID is required",
+          message: "معرّف الاقتراح مطلوب",
         },
         400
       );
@@ -198,7 +214,7 @@ export default factories.student
     if (!proposal) {
       return c.json(
         {
-          message: "Locked-in proposal not found",
+          message: "لم يتم العثور على الاقتراح المقفل",
         },
         404
       );
@@ -217,7 +233,7 @@ export default factories.student
     });
 
     return c.json({
-      message: "Proposal unlocked successfully",
+      message: "تم فتح قفل الاقتراح بنجاح",
       proposal: updatedProposal,
     });
   });
