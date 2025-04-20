@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
 
 const studentRoutes = [
@@ -34,6 +34,7 @@ const teacherRoutes = [
 ];
 
 export function Navbar() {
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const routes =
@@ -45,6 +46,11 @@ export function Navbar() {
       .map((n) => n[0])
       .join("")
       .toUpperCase();
+  };
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/signin");
   };
 
   return (
@@ -106,7 +112,7 @@ export function Navbar() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => authClient.signOut()}
+                onClick={handleSignOut}
               >
                 <LogOut className="ml-2 h-4 w-4" />
                 <span>تسجيل الخروج</span>
