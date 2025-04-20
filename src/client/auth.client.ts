@@ -2,8 +2,14 @@ import { createAuthClient } from "better-auth/react";
 import { inferAdditionalFields } from "better-auth/client/plugins";
 import { auth } from "@/api/auth/index.auth";
 
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` 
+  : process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : "http://localhost:3000";
+
 export const authClient = createAuthClient({
-  baseURL: `https://${process.env.VERCEL_URL}` || "http://localhost:3000",
+  baseURL: baseUrl,
   plugins: [inferAdditionalFields<typeof auth>()],
 });
 

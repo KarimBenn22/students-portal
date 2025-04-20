@@ -5,9 +5,15 @@ import { openAPI } from "better-auth/plugins";
 import { prisma } from "../db";
 import { Specialty } from "@prisma/client";
 
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` 
+  : process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : "http://localhost:3000";
+
 export const auth = betterAuth({
   appName: "Finals Portal",
-  baseURL: `https://${process.env.VERCEL_URL}` || "http://localhost:3000",
+  baseURL: baseUrl,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),

@@ -1,6 +1,10 @@
 import { ApiType } from "@/api";
 import { hc } from "hono/client";
 
-export const honoClient = hc<ApiType>(
-  `https://${process.env.VERCEL_URL}` || "http://localhost:3000"
-);
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` 
+  : process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : "http://localhost:3000";
+
+export const honoClient = hc<ApiType>(baseUrl);
