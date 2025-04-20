@@ -70,6 +70,22 @@ export default factories.student
       );
     }
 
+    // Check if user already has 3 proposals
+    const userProposalsCount = await prisma.proposal.count({
+      where: {
+        proposerId: id
+      }
+    });
+
+    if (userProposalsCount >= 3) {
+      return c.json(
+        {
+          message: "لا يمكنك إنشاء أكثر من 3 اقتراحات",
+        },
+        400
+      );
+    }
+
     const proposal = await prisma.proposal.create({
       data: {
         proposer: {
