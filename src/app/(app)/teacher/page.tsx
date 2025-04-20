@@ -1,5 +1,6 @@
 import { honoClient } from "@/client/hono.client";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,6 +43,7 @@ export default async function TeacherDashboardPage() {
     projectsCount = (await projectsCountRes.json()).projectsCount;
     popularProjects = await popularProjectsRes.json();
     recentProposals = (await recentProposalsRes.json()).proposals;
+    console.log(recentProposals);
     acceptedCount = (await acceptedCountRes.json()).proposals.length;
     pendingCount = (await pendingCountRes.json()).proposals.length;
     activeCount = (await activeCountRes.json()).proposals.length;
@@ -93,15 +95,18 @@ export default async function TeacherDashboardPage() {
                     <div key={i} className="flex items-center justify-between">
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {application.student}
+                          {application.proposer.name}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {application.project}
+                          {application.project.title}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
+                        <Badge>
+                          {application.proposer.specialty}
+                        </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {application.date}
+                          {new Date(application.createdAt).toLocaleString()}
                         </span>
                         {application.status === "pending" && (
                           <Clock className="h-4 w-4 text-yellow-500" />
